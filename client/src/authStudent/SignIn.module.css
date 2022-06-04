@@ -1,0 +1,17 @@
+.submit-btn-contianer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.SubmitBtn{
+    background-color:black;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    border-radius: 30px;
+}
+.SignUp-card{
+    box-shadow: none;
+}
