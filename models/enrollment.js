@@ -50,9 +50,11 @@ const enrollmentSchema = new Schema({
        type: Boolean,
        default:false
      }
-    
-    
-})
+     ,
+     messages:[{
+       type: String
+     }]
+});
 
 const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
 

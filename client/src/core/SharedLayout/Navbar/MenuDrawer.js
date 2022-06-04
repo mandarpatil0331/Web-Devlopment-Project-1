@@ -6,11 +6,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
 } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import InboxIcon from "@mui/icons-material/Inbox";
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 const MenuDrawer = (props) => {
   return (
     <Drawer
@@ -25,25 +26,25 @@ const MenuDrawer = (props) => {
         role="presentation"
       >
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
+            <ListItem button key={"Profile"}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                   <AccountCircleIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"Profile"} />
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
+          <ListItem button key={"My Courses"}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                 <IntegrationInstructionsIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"MyCourses"} />
             </ListItem>
-          ))}
+            <ListItem button key={"To-Do List"}>
+              <ListItemIcon>
+                 <AssignmentLateIcon />
+              </ListItemIcon>
+              <ListItemText primary={"To-Do List"} />
+            </ListItem>
+          
         </List>
       </Box>
     </Drawer>

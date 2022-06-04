@@ -48,9 +48,6 @@ const studentSchema = new Schema({
     type:mongoose.Schema.ObjectId,
     ref:"Enrollment"
   }],
-  messages : [{
-    type:String,
-  }],
   completedEnrollments:[{
     type:mongoose.Schema.ObjectId,
     ref:"Enrollment"
