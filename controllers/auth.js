@@ -104,4 +104,19 @@ exports.requiresSigninStudent = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.loggedInStatus = (req, res) => {
+  if(req.Educator){
+  res.status(200).json({
+    status: "success",
+    isInstructor: true,
+    data: { user: req.Educator },
+  });
+}else{
+  res.status(200).json({
+    status: "success",
+    isInstructor: false,
+    data: { user: req.Student },
+  });
+}
+};
 

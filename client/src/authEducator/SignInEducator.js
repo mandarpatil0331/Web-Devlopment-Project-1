@@ -40,7 +40,8 @@ const SignInEducator = () => {
           localStorage.setItem("token", svrres.token);
           contextval.UserSignIn(svrres.data.user);
           contextval.ChangeisEducator(true);
-          navigate(`/Instructor/${svrres.data.user._id}`);
+          localStorage.setItem("isInstructor", true);
+          navigate(`/Instructor`);
       }
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog}>
