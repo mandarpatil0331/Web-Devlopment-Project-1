@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext, useEffect} from "react";
 import { Box } from "@mui/material";
 import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
@@ -14,7 +14,12 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import { Link, Outlet } from "react-router-dom";
+import AuthContext from "../../../context/AuthContext";
 const InstructorVerticalList = () => {
+  const {User}=useContext(AuthContext);
+  useEffect(() => {
+    console.log(User);
+  } ,[User])
   const [openCourses, setOpenCourses] = React.useState(true);
 
   const handleClickCourses = () => {
@@ -47,6 +52,7 @@ const InstructorVerticalList = () => {
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
+          <Link to={`/Instructor/${User._id}`} style={{ textDecoration: "none",color:"inherit" }}>
           <ListItem>
             <ListItemButton onClick={handleClickCourse}>
               <ListItemIcon>
@@ -56,9 +62,10 @@ const InstructorVerticalList = () => {
               {open.course ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
           </ListItem>
+          </Link>
           <Collapse in={open.course} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link to="/Instructor/UnPublished" style={{ textDecoration: "none",color:"inherit" }}>
+              <Link to={`/Instructor/${User._id}/UnPublished`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4}}>
                   <ListItemIcon>
@@ -68,7 +75,7 @@ const InstructorVerticalList = () => {
                 </ListItemButton>
               </ListItem>
               </Link>
-              <Link to="/Instructor/Published" style={{ textDecoration: "none",color:"inherit" }}>
+              <Link to={`/Instructor/${User._id}/Published`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>
@@ -91,7 +98,7 @@ const InstructorVerticalList = () => {
           </ListItem>
           <Collapse in={open.communication} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-            <Link to="/Instructor/Messages" style={{ textDecoration: "none",color:"inherit" }}>
+            <Link to={`/Instructor/${User._id}/Messages`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>
@@ -101,7 +108,7 @@ const InstructorVerticalList = () => {
                 </ListItemButton>
               </ListItem>
               </Link>
-              <Link to="/Instructor/Assignments" style={{ textDecoration: "none",color:"inherit" }}>
+              <Link to={`/Instructor/${User._id}/Assignments`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>
@@ -124,7 +131,7 @@ const InstructorVerticalList = () => {
           </ListItem>
           <Collapse in={open.tools} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link to="/Instructor/Performance" style={{ textDecoration: "none",color:"inherit" }}>
+              <Link to={`/Instructor/${User._id}/Performance`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>
@@ -147,7 +154,7 @@ const InstructorVerticalList = () => {
           </ListItem>
           <Collapse in={open.others} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-            <Link to="/Instructor/UnPublished" style={{ textDecoration: "none",color:"inherit" }}>
+            <Link to={`/Instructor/${User._id}/ReviewsAndRatings`} style={{ textDecoration: "none",color:"inherit" }}>
               <ListItem>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>

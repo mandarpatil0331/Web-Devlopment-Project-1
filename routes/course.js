@@ -1,11 +1,12 @@
 const express = require("express");
 const { requiresSigninEducator } = require("../controllers/auth");
 const { hasAuthorization } = require("../controllers/educator");
-const {unpublishedCourses,editBasics, courseByID,removeCourse,isUnpublished,isInstructor}=require("../controllers/course");
+const {unpublishedCourses,editBasics, courseByID,removeCourse,isUnpublished,isInstructor, publishedCourses}=require("../controllers/course");
 const {newLesson,editBasicsLesson,removeLesson} = require("../controllers/lesson");
 
 const router = express.Router();
 
+router.route("/courses").get(publishedCourses)
 //Create
 //Lessons,Enrollments,Photos
 router.route("/courses/:educatorId/unpublished").get(requiresSigninEducator,hasAuthorization,unpublishedCourses);

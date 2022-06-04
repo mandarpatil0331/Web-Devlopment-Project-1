@@ -28,7 +28,7 @@ const MainRouter = () => {
         <Route path="/Educator/SignIn" element={<SignInEducator/>}/>
         <Route path="/Educator/SignUp" element={<SignUpEducator/>} />
       </Route>
-      <Route path="Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
+      <Route path="/Instructor/:insturctorId" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
         <Route index element = {<InstructorCourseHomePage/>}/>
         <Route path="UnPublished" element={<InstructorUnpublishedCourses/>} />
         <Route path="Published" element={<InstructorPublishedCourses/>} />

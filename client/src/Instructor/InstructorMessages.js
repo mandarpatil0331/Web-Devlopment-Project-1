@@ -1,8 +1,11 @@
 import React from 'react'
+import {Box} from '@mui/material'
 
 const InstructorMessages = () => {
   return (
-    <div>InstructorMessages</div>
+    <Box>
+      All messages
+    </Box>
   )
 }
 

@@ -11,6 +11,7 @@ const createSendToken = async (currentUser, statusCode, res, next) => {
     res.cookie("jwt", token);
     res.status(statusCode).json({
       status: "success",
+      token: token,
       data: {
         user: currentUser,
       },

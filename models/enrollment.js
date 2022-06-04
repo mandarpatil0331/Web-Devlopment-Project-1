@@ -51,8 +51,7 @@ const enrollmentSchema = new Schema({
        default:false
      }
     
-    
-})
+},{timestamps:true});
 
 const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
 
