@@ -132,3 +132,34 @@ exports.publishedCourses = catchAsync(async(req, res) => {
     },
   })
 })
+
+exports.specificEducatorPublishedCourses = catchAsync(async(req, res) => {
+  page=req.query.page || 1;
+  let Sort_select=req.query.sort_select;
+  const LIMIT = 4;
+  const courses = await Course.find({published:true,instructor: req.Educator._id}).sort( `${Sort_select}` ).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
+  res.status(201).json({
+    status: "success",
+    // jwt: token,
+    data: {
+      courses: courses,
+    },
+  })
+})
+
+exports.changePublishStatus=catchAsync(async (req, res, next) => {
+  //remove all enrollemnts related to course first
+  const currCourse = await Course.findByIdAndUpdate(
+    req.Course._id,
+    { published:false },
+    { runValidators: true, returnDocument: "after" }
+  );
+  await currCourse.save();
+  res.status(201).json({
+    status: "success",
+    // jwt: token,
+    data: {
+      course: currCourse,
+    },
+  })
+});

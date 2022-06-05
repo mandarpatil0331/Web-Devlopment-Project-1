@@ -16,6 +16,7 @@ import InstructorPublishedCourses from "./Instructor/InstructorPublishedCourses"
 import InstructorMessages from "./Instructor/InstructorMessages";
 import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
+import EditCourse from "../src/course/EditCourse"
 
 
 const MainRouter = () => {
@@ -37,6 +38,7 @@ const MainRouter = () => {
         <Route path="Performance" element={<InstructorPerformance/>} />
         <Route path="ReviewsAndRatings" element={<InstructorReviewsAndRatings/>} />
       </Route>
+      <Route path="/Course/:CourseId/Edit" element={<EditCourse/>}/>
     </Routes>
   );
 };
