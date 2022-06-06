@@ -1,7 +1,7 @@
 const express = require("express");
 const { requiresSigninStudent } = require("../controllers/auth");
 const { courseByID ,isPublished} = require("../controllers/course");
-const {createEnrollment,enrollmentById,readEnrollment,isEnrolled,updateLessonStatus,createNote,isComplete,createReview} = require("../controllers/enrollment");
+const {createEnrollment,enrollmentById,readEnrollment,isEnrolled,updateLessonStatus,createNote,isComplete,createReview,createMessage} = require("../controllers/enrollment");
 
 const router = express.Router();
 
@@ -12,6 +12,8 @@ router.route("/enrollments/:enrollmentId").get(requiresSigninStudent,isEnrolled,
 router.route("/enrollment/:enrollmentId/:lessonId/newNote").post(requiresSigninStudent,isEnrolled,enrollmentById,createNote)
 
 router.route("/enrollment/:enrollmentId/review").post(requiresSigninStudent,isEnrolled,enrollmentById,isComplete,createReview)
+
+router.route("/enrollment/:enrollmentId/messages").post(requiresSigninStudent,isEnrolled,enrollmentById,createMessage)
 
 router.route("/enrollments/:enrollmentId/:lessonId/complete").put(requiresSigninStudent,isEnrolled,enrollmentById,updateLessonStatus)
 

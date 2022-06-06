@@ -43,8 +43,16 @@ const educatorSchema = new Schema({
   accounts: [
     {
       type: String,
-    },
-  ],
+    }],
+  courses: [{
+      type:mongoose.Schema.ObjectId,
+      ref:"Course"
+    }],
+  messages: [
+    {
+      type:String
+    }
+  ]
 },{timestamps:true});
 educatorSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
