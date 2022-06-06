@@ -13,26 +13,13 @@ import AuthContext from "../context/AuthContext";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
-  },
-}));
-
 const InstructorPublishedCourses = () => {
   const { User } = useContext(AuthContext);
-  const [unpublishedCourses, setUnpublishedCourses] = React.useState([]);
+  const [publishedCourses, setPublishedCourses] = React.useState([]);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
-    setUnpublishedCourses((prevunpublishedcourses) => {
+    setPublishedCourses((prevunpublishedcourses) => {
       return courses;
     });
   };
@@ -70,7 +57,7 @@ const InstructorPublishedCourses = () => {
       );
       const svrres = await response.json();
       console.log(svrres.data.course);
-      courseUpdate(unpublishedCourses.filter((course)=>{return course._id!==courseId}));
+      courseUpdate(publishedCourses.filter((course)=>{return course._id!==courseId}));
     } catch (err) {
       console.log(err);
     }
@@ -81,7 +68,7 @@ const InstructorPublishedCourses = () => {
   }, []);
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }} width="100">
-      {unpublishedCourses.map((course) => (
+      {publishedCourses.map((course) => (
         <Box
           key={course._id}
           display="flex"
@@ -93,10 +80,11 @@ const InstructorPublishedCourses = () => {
             <br />
             <Typography sx={{ mb: 1 }}>{course.description}</Typography>
           </Box>
-          <Box>
-            <BorderLinearProgress variant="determinate" value={50} />
-          </Box>
-          <Link to="/Instructor/Published">
+          <Box display="flex" justifyContent="center" alignItems="center">
+              <Button>
+                Reviews & Ratings
+              </Button>
+            </Box>
             <Box display="flex" justifyContent="center" alignItems="center">
               <Button
                 onClick={() => {
@@ -106,7 +94,7 @@ const InstructorPublishedCourses = () => {
                 Unpublish
               </Button>
             </Box>
-          </Link>
+
         </Box>
       ))}
     </Box>

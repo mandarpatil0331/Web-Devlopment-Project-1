@@ -135,29 +135,6 @@ const InstructorVerticalList = () => {
           </Link>
         </List>
       </Collapse>
-      <ListItem>
-        <ListItemButton onClick={handleClickOthers}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="other" />
-          {open.others ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-      </ListItem>
-      <Collapse in={open.others} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-        <Link to={`/Instructor/ReviewsAndRatings`} style={{ textDecoration: "none",color:"inherit" }}>
-          <ListItem>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary="Reviews and rating" />
-            </ListItemButton>
-          </ListItem>
-          </Link>
-        </List>
-      </Collapse>
     </List>
   </Box>
   <Box sx={{flexGrow:10}}>

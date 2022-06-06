@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
@@ -13,57 +13,43 @@ import classes from "./Courses.module.css";
 import { Link } from "react-router-dom";
 
 const Courses = () => {
-  const courses = [];
+  const [courses,setCourses]=useState([]);
+  const host = "http://localhost:8000";
+  const courseUpdate = (courses) => {
+    console.log("State function called!");
+    setCourses((prevunpublishedcourses) => {
+      return courses;
+    });
+  };
+  const getCourses = async () => {
+    try {
+      let response = await fetch(`${host}/api/courses`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const svrres = await response.json();
+      console.log(svrres.data.courses);
+      courseUpdate(svrres.data.courses);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(()=>{
+    getCourses();
+  },[])
   return (
     <>
       <Typography align="center" sx={{ mb: 5 }} variant="h3">
         All Courses
       </Typography>
-      <Box sx={{ height: 400, backgroundColor: "green" }}>
-        <Grid className={classes["course-container"]}>
+      <Box sx={{ height: 300 ,display:"flex",justifyContent:"space-around",alignItems:"center"}}>
           {courses.map((course) => (
-            <Card className={classes["course-card"]} key={course._id}>
-              <CardMedia
-                component="img"
-                height="120"
-                image="/static/images/cards/contemplative-reptile.jpg"
-                alt="course image"
-              />
-              <CardContent>
-                <Link to={"/courses/" + course._id} className={classes.link}>
-                  <Typography
-                    variant="h6"
-                    sx={{ mb: 1 }}
-                    align="center"
-                    className={classes["course-card-nametypo"]}
-                  >
-                    course.name
-                  </Typography>
-                </Link>
-                <Typography
-                  variant="body2"
-                  sx={{ mb: 0.2 }}
-                  align="center"
-                  color="text.secondary"
-                >
-                  course.description
-                </Typography>
-                <Link
-                  to={"/user/" + course.instructor._id}
-                  className={classes.link}
-                >
-                  <Typography variant="body5" align="left">
-                    course.instructor.name
-                  </Typography>
-                </Link>
-              </CardContent>
-              <CardActions>
-                <Button size="small">Share</Button>
-                <Button size="small">Learn More</Button>
-              </CardActions>
-            </Card>
+            <p>{course.name}</p>
           ))}
-        </Grid>
       </Box>
     </>
   );

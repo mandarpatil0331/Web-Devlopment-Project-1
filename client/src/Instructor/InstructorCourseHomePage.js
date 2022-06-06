@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box,FormControl,InputLabel,Select,MenuItem} from "@mui/material"
+import {Box,FormControl,InputLabel,Select,MenuItem,Typography} from "@mui/material"
 import SearchBar from "../core/SharedLayoutInstructor/InstructorNavbar/SearchBar"
 
 const InstructorCourseHomePage = () => {
@@ -32,7 +32,21 @@ const InstructorCourseHomePage = () => {
     </Box>
     <Box>
       <p>Your Courses</p>
-      
+      {/* {Courses.map((course) => (
+        <Box
+          key={course._id}
+          display="flex"
+          height="40"
+          sx={{ borderColor: "primary.secondary", mt: 3, mb: 2, ml: 5, mr: 10 }}
+        >
+          <Box sx={{ flexGrow: "1" }} display="block">
+            <Typography sx={{ mt: 1, mb: 1 }}>{course.name}</Typography>
+            <br />
+            <Typography sx={{ mb: 1 }}>{course.description}</Typography>
+          </Box>
+
+        </Box>
+      ))} */}
     </Box>
     </>
   )
