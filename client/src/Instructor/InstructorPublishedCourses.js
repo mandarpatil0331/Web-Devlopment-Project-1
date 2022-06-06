@@ -9,11 +9,17 @@ import {
   LinearProgress,
   linearProgressClasses,
 } from "@mui/material";
+import {FormControl,InputLabel,Select,MenuItem} from "@mui/material"
 import AuthContext from "../context/AuthContext";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
 const InstructorPublishedCourses = () => {
+  const [sort, setSort] = React.useState('');
+
+  const handleChange = (event) => {
+    setSort(event.target.value);
+  };
   const { User } = useContext(AuthContext);
   const [publishedCourses, setPublishedCourses] = React.useState([]);
   const host = "http://localhost:8000";
@@ -25,7 +31,7 @@ const InstructorPublishedCourses = () => {
   };
   const getPublishedCourses = async () => {
     try {
-      let response = await fetch(`${host}/api/courses/${User._id}/published`, {
+      let response = await fetch(`${host}/api/courses/${User._id}/published?sort_select=${sort}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -65,8 +71,28 @@ const InstructorPublishedCourses = () => {
 
   useEffect(() => {
     getPublishedCourses();
-  }, []);
-  return (
+  }, [sort]);
+  return (<>
+  <Box component="div" sx={{ display: "flex",flexDirection:"row",mt:3,justifyContent:"space-around"}}>
+      <Box><h2>Your Published Courses</h2></Box>
+      <Box sx={{ minWidth: 180}}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={sort}
+          label="Sort"
+          onChange={handleChange}
+        >
+          <MenuItem value="-enrollments">Most Popular</MenuItem>
+          <MenuItem value="updatedAt">Recent</MenuItem>
+          <MenuItem value="name">Alphabetically</MenuItem>
+          <MenuItem value="createdAt">Date Added</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
+    </Box>
     <Box sx={{ display: "flex", flexDirection: "column" }} width="100">
       {publishedCourses.map((course) => (
         <Box
@@ -98,6 +124,7 @@ const InstructorPublishedCourses = () => {
         </Box>
       ))}
     </Box>
+    </>
   );
 };
 

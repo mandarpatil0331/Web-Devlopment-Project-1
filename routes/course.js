@@ -1,6 +1,7 @@
 const express = require("express");
-const { requiresSigninEducator } = require("../controllers/auth");
-const { hasAuthorization } = require("../controllers/educator");
+const { requiresSigninEducator,requiresSigninStudent } = require("../controllers/auth");
+const { hasAuthorizationEducator } = require("../controllers/educator");
+const { hasAuthorization } = require("../controllers/student");
 const {
   unpublishedCourses,
   editBasics,
@@ -12,6 +13,7 @@ const {
   specificEducatorPublishedCourses,
   isPublished,
   changePublishStatus,
+  studentEnrollments
 } = require("../controllers/course");
 const {
   newLesson,
@@ -19,19 +21,21 @@ const {
   removeLesson,
 } = require("../controllers/lesson");
 
+
 const router = express.Router();
 
 router.route("/courses").get(publishedCourses);
 //Create
 //Lessons,Enrollments,Photos
+router.route("/courses/:studentId").get(requiresSigninStudent,hasAuthorization,studentEnrollments)
 router
   .route("/courses/:educatorId/unpublished")
-  .get(requiresSigninEducator, hasAuthorization, unpublishedCourses);
+  .get(requiresSigninEducator, hasAuthorizationEducator, unpublishedCourses);
 router
   .route("/courses/:educatorId/published")
   .get(
     requiresSigninEducator,
-    hasAuthorization,
+    hasAuthorizationEducator,
     specificEducatorPublishedCourses
   );
 
@@ -62,7 +66,7 @@ router
   .route("/courses/:educatorId/published/:courseId")
   .put(
     requiresSigninEducator,
-    hasAuthorization,
+    hasAuthorizationEducator,
     courseByID,
     isPublished,
     changePublishStatus
@@ -71,7 +75,7 @@ router
   .route("/courses/:educatorId/unpublished/:courseId/basics")
   .put(
     requiresSigninEducator,
-    hasAuthorization,
+    hasAuthorizationEducator,
     courseByID,
     isUnpublished,
     editBasics
@@ -81,6 +85,6 @@ router
 //Photo,Enrollment,Lesson,
 router
   .route("/courses/:educatorId/:courseId")
-  .delete(requiresSigninEducator, hasAuthorization, courseByID, removeCourse);
+  .delete(requiresSigninEducator, hasAuthorizationEducator, courseByID, removeCourse);
 
 module.exports = router;

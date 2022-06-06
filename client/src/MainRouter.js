@@ -17,6 +17,7 @@ import InstructorMessages from "./Instructor/InstructorMessages";
 import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
 import EditCourse from "../src/course/EditCourse"
+import MyLearning from "./Student/MyLearning";
 
 
 const MainRouter = () => {
@@ -30,6 +31,9 @@ const MainRouter = () => {
         <Route path="/Educator/SignIn" element={<SignInEducator/>}/>
         <Route path="/Educator/SignUp" element={<SignUpEducator/>} />
       </Route>
+      <Route path="/Student/:StudentId" element={<SharedLayout />}>
+        <Route index element={<MyLearning/>} />
+        </Route>
       <Route path="/Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
         <Route index element = {<InstructorCourseHomePage/>}/>
         <Route path="UnPublished" element={<InstructorUnpublishedCourses/>} />

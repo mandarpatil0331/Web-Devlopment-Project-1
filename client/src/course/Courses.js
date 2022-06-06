@@ -9,10 +9,16 @@ import {
   Button,
   Box,
 } from "@mui/material";
+import {FormControl,InputLabel,Select,MenuItem,Stack,Pagination} from "@mui/material"
 import classes from "./Courses.module.css";
 import { Link } from "react-router-dom";
 
 const Courses = () => {
+  const [sort, setSort] = React.useState('');
+
+  const handleChange = (event) => {
+    setSort(event.target.value);
+  };
   const [courses,setCourses]=useState([]);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
@@ -23,7 +29,7 @@ const Courses = () => {
   };
   const getCourses = async () => {
     try {
-      let response = await fetch(`${host}/api/courses`, {
+      let response = await fetch(`${host}/api/courses?sort_select=${sort}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -40,15 +46,31 @@ const Courses = () => {
   };
   useEffect(()=>{
     getCourses();
-  },[])
+  },[sort])
   return (
     <>
-      <Typography align="center" sx={{ mb: 5 }} variant="h3">
-        All Courses
-      </Typography>
+      <Box component="div" sx={{ display: "flex",flexDirection:"row",mt:3,justifyContent:"space-around"}}>
+      <Box><h2>All Courses</h2></Box>
+      <Box sx={{ minWidth: 180}}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={sort}
+          label="Sort"
+          onChange={handleChange}
+        >
+          <MenuItem value="-enrollments">Most Popular</MenuItem>
+          <MenuItem value="name">Alphabetically</MenuItem>
+          <MenuItem value="createdAt">Latest</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
+    </Box>
       <Box sx={{ height: 300 ,display:"flex",justifyContent:"space-around",alignItems:"center"}}>
           {courses.map((course) => (
-            <p>{course.name}</p>
+            <p key={course._id}>{course.name}</p>
           ))}
       </Box>
     </>
