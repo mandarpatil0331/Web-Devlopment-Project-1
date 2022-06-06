@@ -36,6 +36,7 @@ export default function SignIn(props) {
           });
           const svrres = await response.json();
           console.log(svrres);
+          localStorage.setItem("token", svrres.token);
           contextval.UserSignIn(svrres.data.user);
           navigate(-1);
       }

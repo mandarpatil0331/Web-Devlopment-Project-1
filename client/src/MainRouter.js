@@ -16,6 +16,8 @@ import InstructorPublishedCourses from "./Instructor/InstructorPublishedCourses"
 import InstructorMessages from "./Instructor/InstructorMessages";
 import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
+import EditCourse from "../src/course/EditCourse"
+
 
 const MainRouter = () => {
   return (
@@ -28,7 +30,7 @@ const MainRouter = () => {
         <Route path="/Educator/SignIn" element={<SignInEducator/>}/>
         <Route path="/Educator/SignUp" element={<SignUpEducator/>} />
       </Route>
-      <Route path="Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
+      <Route path="/Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
         <Route index element = {<InstructorCourseHomePage/>}/>
         <Route path="UnPublished" element={<InstructorUnpublishedCourses/>} />
         <Route path="Published" element={<InstructorPublishedCourses/>} />
@@ -36,6 +38,7 @@ const MainRouter = () => {
         <Route path="Performance" element={<InstructorPerformance/>} />
         <Route path="ReviewsAndRatings" element={<InstructorReviewsAndRatings/>} />
       </Route>
+      <Route path="/Course/:CourseId/Edit" element={<EditCourse/>}/>
     </Routes>
   );
 };

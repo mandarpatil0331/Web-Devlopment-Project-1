@@ -56,8 +56,12 @@ const courseSchema = new Schema({
         {
             type:mongoose.Schema.ObjectId,
             ref:"Enrollment"
-        }
+        },
     ],
+    totalEnrollments:{
+      total: Number,
+      default:0
+    },
     lessons: [LessonSchema],
     category:[{
       type:String
@@ -67,7 +71,7 @@ const courseSchema = new Schema({
       min:0
     }
     
-})
+},{timestamps:true});
 
 const Course = mongoose.model("Course", courseSchema);
 const Lesson = mongoose.model('Lesson', LessonSchema)

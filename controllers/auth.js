@@ -11,6 +11,7 @@ const createSendToken = async (currentUser, statusCode, res, next) => {
     res.cookie("jwt", token);
     res.status(statusCode).json({
       status: "success",
+      token: token,
       data: {
         user: currentUser,
       },
@@ -103,4 +104,19 @@ exports.requiresSigninStudent = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.loggedInStatus = (req, res) => {
+  if(req.Educator){
+  res.status(200).json({
+    status: "success",
+    isInstructor: true,
+    data: { user: req.Educator },
+  });
+}else{
+  res.status(200).json({
+    status: "success",
+    isInstructor: false,
+    data: { user: req.Student },
+  });
+}
+};
 

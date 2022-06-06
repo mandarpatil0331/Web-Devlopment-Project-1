@@ -1,5 +1,5 @@
 const express = require("express");
-const { signInEducator,requiresSigninEducator,educatorSignOut,signInStudent,requiresSigninStudent,studentSignOut } = require("../controllers/auth");
+const { signInEducator,requiresSigninEducator,educatorSignOut,signInStudent,requiresSigninStudent,studentSignOut,loggedInStatus } = require("../controllers/auth");
 
 
 
@@ -10,7 +10,7 @@ router.route("/auth/educator/signOut").get(requiresSigninEducator, educatorSignO
 router.route("/auth/student/signin").post(signInStudent);
 router.route("/auth/student/signOut").get(requiresSigninStudent, studentSignOut);
 
-// router.get("/auth/educator/isLoggedIn", requiresEducatorSignin, loggedInStatus);
-// router.get("/auth/student/isLoggedIn", requiresStudentSignin, loggedInStatus);
+router.get("/auth/educator/isLoggedIn", requiresSigninEducator, loggedInStatus);
+router.get("/auth/student/isLoggedIn", requiresSigninStudent, loggedInStatus);
 
 module.exports = router;

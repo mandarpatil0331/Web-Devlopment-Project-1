@@ -22,6 +22,7 @@ exports.createEnrollment = catchAsync(async (req, res, next) => {
     await newEnrollment.save();
     const currcourse = await Course.findById(req.Course._id);
     currcourse.enrollments.push(newEnrollment);
+    currcourse.totalEnrollments=currcourse.totalEnrollments+1;
     await currcourse.save();
     const currstudent = await Student.findById(req.Student._id);
     currstudent.enrollments.push(newEnrollment);

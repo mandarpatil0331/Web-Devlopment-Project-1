@@ -21,10 +21,13 @@ exports.createCourse = catchAsync(async (req, res, next) => {
 });
 
 exports.unpublishedCourses = catchAsync(async (req, res, next) => {
+  const LIMIT=3
+  const sort_select=req.query.sort_select;
+  page=req.query.page||1;
   const courses = await Course.find({
     instructor: req.Educator._id,
     published: false,
-  }).populate("instructor");
+  }).sort({ name: 'asc' }).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
   if (!courses) {
     return next(new AppError("No Courses Found", 401));
   }
@@ -114,4 +117,49 @@ exports.imgCourse = catchAsync(async (req, res, next) => {
     res.set("Content-Type", req.Course.image.contentType);
     return res.send(req.Course.image.data);
   }
+});
+
+exports.publishedCourses = catchAsync(async(req, res) => {
+  page=req.query.page || 1;
+  let Sort_select=req.query.sort_select;
+  const LIMIT = 4;
+  const courses = await Course.find({published:true}).sort( `${Sort_select}` ).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
+  res.status(201).json({
+    status: "success",
+    // jwt: token,
+    data: {
+      courses: courses,
+    },
+  })
+})
+
+exports.specificEducatorPublishedCourses = catchAsync(async(req, res) => {
+  page=req.query.page || 1;
+  let Sort_select=req.query.sort_select;
+  const LIMIT = 4;
+  const courses = await Course.find({published:true,instructor: req.Educator._id}).sort( `${Sort_select}` ).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
+  res.status(201).json({
+    status: "success",
+    // jwt: token,
+    data: {
+      courses: courses,
+    },
+  })
+})
+
+exports.changePublishStatus=catchAsync(async (req, res, next) => {
+  //remove all enrollemnts related to course first
+  const currCourse = await Course.findByIdAndUpdate(
+    req.Course._id,
+    { published:false },
+    { runValidators: true, returnDocument: "after" }
+  );
+  await currCourse.save();
+  res.status(201).json({
+    status: "success",
+    // jwt: token,
+    data: {
+      course: currCourse,
+    },
+  })
 });

@@ -50,12 +50,11 @@ const enrollmentSchema = new Schema({
        type: Boolean,
        default:false
      }
-     ,
+    ,
      messages:[{
        type: String
      }]
-});
-
+},{timestamps:true});
 const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
 
 module.exports = Enrollment;

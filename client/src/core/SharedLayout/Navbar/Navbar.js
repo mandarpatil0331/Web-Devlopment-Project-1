@@ -26,6 +26,7 @@ export default function Navbar() {
   const handleAfterLogout = () => {
     contextVal.UserSignOut();
     handleMenuClose();
+    localStorage.removeItem("token");
     if(contextVal.isInstructor){
       contextVal.ChangeisEducator(false);
     }

@@ -17,6 +17,8 @@ const navigate = useNavigate();
 const handleLogoutInsructor = () => {
     contextVal.UserSignOut();
     handleMenuClose();
+    localStorage.removeItem("isInstructor");
+    localStorage.removeItem("token");
     if(contextVal.isInstructor){
       contextVal.ChangeisEducator(false);
     }
