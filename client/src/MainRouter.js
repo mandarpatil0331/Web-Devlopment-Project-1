@@ -25,6 +25,8 @@ import MyAccount from "./Student/MyAccount";
 import MyNotifications from "./Student/MyNotifications";
 import CloseAccount from "./Student/CloseAccount";
 import InstructorAssignments from "./Instructor/InstructorAssignments";
+import InstructorPublicProfile from "./Instructor/InstructorPublicProfile";
+import PublicSpecificCourse from "./course/SpecificCourse/PublicSpecificCourse";
 
 
 const MainRouter = () => {
@@ -37,6 +39,7 @@ const MainRouter = () => {
         <Route path="/Educator" element={<EducatorHome/>} />
         <Route path="/Educator/SignIn" element={<SignInEducator/>}/>
         <Route path="/Educator/SignUp" element={<SignUpEducator/>} />
+        <Route path="/Course/:CourseId" element={<PublicSpecificCourse/>} />
       </Route>
       <Route path="/Student/:StudentId" element={<SharedLayout />}>
         <Route index element={<MyLearning/>} />
@@ -48,6 +51,7 @@ const MainRouter = () => {
           <Route path="CloseAccount" element={<CloseAccount/>} />
           </Route>
         </Route>
+        <Route path = "/Instructor/:InstructorId" element = {<InstructorPublicProfile/>}/>
       <Route path="/Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
         <Route index element = {<InstructorCourseHomePage/>}/>
         <Route path="UnPublished" element={<InstructorUnpublishedCourses/>} />
@@ -56,8 +60,9 @@ const MainRouter = () => {
         <Route path="Assignments" element={<InstructorAssignments/>} />
         <Route path="Performance" element={<InstructorPerformance/>} />
         <Route path="ReviewsAndRatings" element={<InstructorReviewsAndRatings/>} />
+        <Route path="Course/:CourseId/Edit" element={<EditCourse/>}/>
       </Route>
-      <Route path="/Course/:CourseId/Edit" element={<EditCourse/>}/>
+        
     </Routes>
   );
 };

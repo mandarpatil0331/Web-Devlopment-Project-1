@@ -46,14 +46,6 @@ const MyProfile = () => {
               <ListItemIcon>
                 <DraftsIcon />
               </ListItemIcon>
-              <ListItemText primary="Subsrciptions" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon>
-                <DraftsIcon />
-              </ListItemIcon>
               <ListItemText primary="Privacy" />
             </ListItemButton>
           </ListItem>

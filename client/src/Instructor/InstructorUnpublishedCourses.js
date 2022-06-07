@@ -8,9 +8,6 @@ import {
   CardActions,
   LinearProgress,
   linearProgressClasses,
-  Pagination,
-  Stack,
-
 } from "@mui/material";
 import {FormControl,InputLabel,Select,MenuItem,Stack,Pagination} from "@mui/material"
 import AuthContext from "../context/AuthContext";
@@ -35,8 +32,6 @@ const InstructorUnpublishedCourses = () => {
   const[numberOfPages,setNumberOfPages] = React.useState(0);
   const { User } = useContext(AuthContext);
   const [unpublishedCourses, setUnpublishedCourses] = React.useState([]);
-  const [numberOfPages,setNumberOfPages] = React.useState(0);
-  const [pageNumber,setPageNumber]  = React.useState(1);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");

@@ -18,9 +18,6 @@ const EducatorLinkBlock = () => {
       <Button >Educators Login</Button>
     </Link>
     </Box>
-    <Stack spacing={2} justifyContent="center" alignItems="center">
-      <Pagination count={10} shape="rounded" />
-    </Stack>
   </Box>
   )
 }

@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState ,useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 // import useTheme from '@mui/material/styles';
 import {
   Typography,
@@ -10,8 +9,9 @@ import {
   CardActions,
   Button,
   IconButton,
-
-  Box
+  Box,
+  Rating,
+  Popover,
 } from "@mui/material";
 import {
   FormControl,
@@ -24,42 +24,70 @@ import {
 import classes from "./Courses.module.css";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const Courses = () => {
-  const {User} = useContext(AuthContext);
+  const { User } = useContext(AuthContext);
   const [sort, setSort] = React.useState("");
-
+  const [numberOfPages, setNumberOfPages] = React.useState(0);
+  const [pageNumber, setPageNumber] = React.useState(1);
   const handleChange = (event) => {
     setSort(event.target.value);
   };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const openCourseDetail = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeCourseDetail = () => {
+    setAnchorEl(null);
+  };
+
+  const openDetail = Boolean(anchorEl);
   const [courses, setCourses] = useState([]);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
-    setPublishedCourses((prevunpublishedcourses) => {
+    setCourses((prevcourses) => {
       return courses;
+    });
+  };
+  const increasePageNumber = () => {
+    setPageNumber((prevpageNumber) => {
+      return prevpageNumber + 1;
+    });
+  };
+  const decreasePageNumber = () => {
+    setPageNumber((prevpageNumber) => {
+      return prevpageNumber - 1;
     });
   };
   const getCourses = async () => {
     try {
-      let response = await fetch(`${host}/api/courses?sort_select=${sort}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      let response = await fetch(
+        `${host}/api/courses?sort_select=${sort}&page=${pageNumber}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
       const svrres = await response.json();
       console.log(svrres.data.courses);
       courseUpdate(svrres.data.courses);
+      setNumberOfPages(svrres.numberOfPages);
     } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
     getCourses();
-  }, [sort]);
+  }, [sort, pageNumber]);
   return (
     <>
       <Box
@@ -100,9 +128,89 @@ const Courses = () => {
           alignItems: "center",
         }}
       >
+        <IconButton disabled={pageNumber === 1} onClick={decreasePageNumber}>
+          <ArrowBackIosIcon />
+        </IconButton>
         {courses.map((course) => (
-          <p key={course._id}>{course.name}</p>
+          <Card
+            className={classes["course-card"]}
+            key={course._id}
+            onMouseEnter={openCourseDetail}
+            onMouseLeave={closeCourseDetail}
+          >
+            <CardMedia
+              component="img"
+              height="120"
+              image="/static/images/cards/contemplative-reptile.jpg"
+              alt="course image"
+            />
+            <CardContent>
+              <Link to={"/Course/" + course._id} className={classes.link}>
+                <Typography
+                  variant="h6"
+                  sx={{ mb: 1 }}
+                  align="center"
+                  className={classes["course-card-nametypo"]}
+                >
+                  {course.name}
+                </Typography>
+              </Link>
+              <Link
+                to={"/Instructor/" + course.instructor._id}
+                className={classes.link}
+              >
+                <Typography variant="body5" align="left">
+                  {course.instructor.name}
+                </Typography>
+              </Link>
+              <Stack>
+                <Rating
+                  name="course-rating"
+                  size="small"
+                  defaultValue={2.5}
+                  precision={0.5}
+                  readOnly
+                />
+                <Typography variant="body2" align="left">
+                  {course.rating}
+                </Typography>
+              </Stack>
+              <Typography>₹{course.price}</Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small">Learn More</Button>
+            </CardActions>
+
+            <Popover
+              id="mouse-over-popover"
+              sx={{
+                pointerEvents: "none",
+              }}
+              open={openDetail}
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "center",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "center",
+                horizontal: "left",
+              }}
+              onClose={closeCourseDetail}
+              disableRestoreFocus
+            >
+              <Box>
+                <Typography>{course.name}</Typography>
+              </Box>
+            </Popover>
+          </Card>
         ))}
+        <IconButton
+          disabled={pageNumber === numberOfPages}
+          onClick={increasePageNumber}
+        >
+          <ArrowForwardIosIcon />
+        </IconButton>
       </Box>
     </>
   );
