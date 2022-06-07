@@ -1,4 +1,4 @@
-import React, { useEffect,useContext } from 'react'
+import React, { useEffect, useContext } from "react";
 import {
   Typography,
   Card,
@@ -10,11 +10,9 @@ import {
 } from "@mui/material";
 import classes from "./Courses.module.css";
 import AuthContext from "../context/AuthContext";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
 
 const MyCourses = () => {
-  
   const { User } = useContext(AuthContext);
   const host = "http://localhost:8000";
   const [myEnrollments, setMyEnrollments] = React.useState([]);
@@ -41,31 +39,26 @@ const MyCourses = () => {
     } catch (err) {
       console.log(err);
     }
-  }
-  useEffect (() => {
-    getMyCourses()
-  },[]);
+  };
+  useEffect(() => {
+    getMyCourses();
+  }, []);
   return (
     <>
-      <Box>
-        <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" flexDirection="column">
+        <Box display="flex" justifyContent="flex-end" sx={{mr:5,mt:5}}>
           <Link to={`Student/${User._id}`}>
-        <Button>
-          My learning
-        </Button>
-        </Link>
+            <Button>My learning</Button>
+          </Link>
         </Box>
-        <Box>
-          {
-            myEnrollments.map((enrollment) => (
-              <h1 key={enrollment.course._id}>{enrollment.course.name}</h1>
-            ))
-            }
-
+        <Box display="flex" justifyContent="space-around" alignItems="center">
+          {myEnrollments.map((enrollment) => (
+            <h1 key={enrollment.course._id}>{enrollment.course.name}</h1>
+          ))}
         </Box>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default MyCourses
+export default MyCourses;

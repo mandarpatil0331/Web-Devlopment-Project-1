@@ -1,9 +1,12 @@
-import React from 'react'
-import { Menu,MenuItem } from '@mui/material'
+import React, { useContext } from "react";
+import { Menu, MenuItem } from "@mui/material";
+import { Link } from "react-router-dom";
+import AuthContext from "../../../context/AuthContext";
 
 const ProfileMenu = (props) => {
-const isMenuOpen = Boolean(props.anchorEl);
-  return (
+  const { User } = useContext(AuthContext);
+  const isMenuOpen = Boolean(props.anchorEl);
+  return (User && 
     <Menu
       anchorEl={props.anchorEl}
       anchorOrigin={{
@@ -18,11 +21,13 @@ const isMenuOpen = Boolean(props.anchorEl);
       open={isMenuOpen}
       onClose={props.handleMenuClose}
     >
-      <MenuItem onClick={props.handleMenuClose}>Profile</MenuItem>
+      <Link to={`/Student/${User._id}/Profile`}>
+        <MenuItem onClick={props.handleMenuClose}>Profile</MenuItem>
+      </Link>
       <MenuItem onClick={props.handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={props.handleAfterLogout}>Logout</MenuItem>
     </Menu>
-  )
-}
+  );
+};
 
-export default ProfileMenu
+export default ProfileMenu;

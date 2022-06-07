@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   Typography,
   Grid,
@@ -9,17 +9,26 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import {FormControl,InputLabel,Select,MenuItem,Stack,Pagination} from "@mui/material"
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Stack,
+  Pagination,
+} from "@mui/material";
 import classes from "./Courses.module.css";
 import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const Courses = () => {
-  const [sort, setSort] = React.useState('');
+  const {User} = useContext(AuthContext);
+  const [sort, setSort] = React.useState("");
 
   const handleChange = (event) => {
     setSort(event.target.value);
   };
-  const [courses,setCourses]=useState([]);
+  const [courses, setCourses] = useState([]);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
@@ -44,34 +53,52 @@ const Courses = () => {
       console.log(err);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     getCourses();
-  },[sort])
+  }, [sort]);
   return (
     <>
-      <Box component="div" sx={{ display: "flex",flexDirection:"row",mt:3,justifyContent:"space-around"}}>
-      <Box><h2>All Courses</h2></Box>
-      <Box sx={{ minWidth: 180}}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={sort}
-          label="Sort"
-          onChange={handleChange}
-        >
-          <MenuItem value="-enrollments">Most Popular</MenuItem>
-          <MenuItem value="name">Alphabetically</MenuItem>
-          <MenuItem value="createdAt">Latest</MenuItem>
-        </Select>
-      </FormControl>
-    </Box>
-    </Box>
-      <Box sx={{ height: 300 ,display:"flex",justifyContent:"space-around",alignItems:"center"}}>
-          {courses.map((course) => (
-            <p key={course._id}>{course.name}</p>
-          ))}
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          mt: 3,
+          justifyContent: "space-around",
+        }}
+      >
+        <Box>
+          {User && <h2>Recommended Courses</h2>}
+          {!User && <h2>All Courses</h2>}
+        </Box>
+        <Box sx={{ minWidth: 180 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={sort}
+              label="Sort"
+              onChange={handleChange}
+            >
+              <MenuItem value="-enrollments">Most Popular</MenuItem>
+              <MenuItem value="name">Alphabetically</MenuItem>
+              <MenuItem value="createdAt">Latest</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          height: 300,
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        {courses.map((course) => (
+          <p key={course._id}>{course.name}</p>
+        ))}
       </Box>
     </>
   );

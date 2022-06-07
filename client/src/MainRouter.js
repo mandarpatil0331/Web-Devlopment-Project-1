@@ -18,6 +18,13 @@ import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
 import EditCourse from "../src/course/EditCourse"
 import MyLearning from "./Student/MyLearning";
+import MyProfile from "./Student/MyProfile";
+import MyPublicProfile from "./Student/MyPublicProfile";
+import MyPhoto from "./Student/MyPhoto";
+import MyAccount from "./Student/MyAccount";
+import MyNotifications from "./Student/MyNotifications";
+import CloseAccount from "./Student/CloseAccount";
+import InstructorAssignments from "./Instructor/InstructorAssignments";
 
 
 const MainRouter = () => {
@@ -33,12 +40,20 @@ const MainRouter = () => {
       </Route>
       <Route path="/Student/:StudentId" element={<SharedLayout />}>
         <Route index element={<MyLearning/>} />
+        <Route path="Profile" element={<MyProfile/>} >
+          <Route path="PublicProfile" element={<MyPublicProfile/>} />
+          <Route path="Photo" element={<MyPhoto/>} />
+          <Route path="Account" element={<MyAccount/>} />
+          <Route path="Notifications" element={<MyNotifications/>} />
+          <Route path="CloseAccount" element={<CloseAccount/>} />
+          </Route>
         </Route>
       <Route path="/Instructor" element={<><InstructorNavbar/><InstructorVerticalList/><Footer/></>}>
         <Route index element = {<InstructorCourseHomePage/>}/>
         <Route path="UnPublished" element={<InstructorUnpublishedCourses/>} />
         <Route path="Published" element={<InstructorPublishedCourses/>} />
         <Route path="Messages" element={<InstructorMessages/>} />
+        <Route path="Assignments" element={<InstructorAssignments/>} />
         <Route path="Performance" element={<InstructorPerformance/>} />
         <Route path="ReviewsAndRatings" element={<InstructorReviewsAndRatings/>} />
       </Route>
