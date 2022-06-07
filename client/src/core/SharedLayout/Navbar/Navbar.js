@@ -1,4 +1,4 @@
-import React, { useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material";
 import { Container } from "@mui/system";
@@ -27,7 +27,7 @@ export default function Navbar() {
     contextVal.UserSignOut();
     handleMenuClose();
     localStorage.removeItem("token");
-    if(contextVal.isInstructor){
+    if (contextVal.isInstructor) {
       contextVal.ChangeisEducator(false);
     }
     navigate("/");
@@ -71,20 +71,24 @@ export default function Navbar() {
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2 }}
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-            <MenuDrawer
-              anchorElNav={anchorElNav}
-              handleCloseNavMenu={handleCloseNavMenu}
-            />
+            {contextVal.User && (
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2 }}
+                onClick={handleOpenNavMenu}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            {contextVal.User && (
+              <MenuDrawer
+                anchorElNav={anchorElNav}
+                handleCloseNavMenu={handleCloseNavMenu}
+              />
+            )}
             <Link
               to="/"
               style={{ color: "inherit", textDecoration: "inherit" }}

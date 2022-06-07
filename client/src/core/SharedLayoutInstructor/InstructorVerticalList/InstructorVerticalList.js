@@ -23,6 +23,7 @@ const InstructorVerticalList = () => {
     communication: false,
     tools: false,
     others: false,
+    profile: false,
   });
   const handleClickCourse = (e) => {
     setOpen({ ...open, course: !open.course });
@@ -35,6 +36,9 @@ const InstructorVerticalList = () => {
   };
   const handleClickOthers = (e) => {
     setOpen({ ...open, others: !open.others });
+  };
+  const handleClickProfile = (e) => {
+    setOpen({ ...open, profile: !open.profile });
   };
 
   const userPresent=(<Box component="div" sx={{ display: "flex",flexDirection:"row"}} >
@@ -130,6 +134,39 @@ const InstructorVerticalList = () => {
                 <StarBorder />
               </ListItemIcon>
               <ListItemText primary="Performance" />
+            </ListItemButton>
+          </ListItem>
+          </Link>
+        </List>
+      </Collapse>
+      <ListItem>
+        <ListItemButton onClick={handleClickProfile}>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Profile" />
+          {open.profile ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+      </ListItem>
+      <Collapse in={open.profile} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to={`/Instructor/PublicProfile`} style={{ textDecoration: "none",color:"inherit" }}>
+          <ListItem>
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Public Profile" />
+            </ListItemButton>
+          </ListItem>
+          </Link>
+          <Link to={`/Instructor/Photo`} style={{ textDecoration: "none",color:"inherit" }}>
+          <ListItem>
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Photo" />
             </ListItemButton>
           </ListItem>
           </Link>

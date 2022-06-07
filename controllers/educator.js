@@ -67,7 +67,7 @@ exports.updateEducator = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.hasAuthorization = catchAsync(async (req, res, next) => {
+exports.hasAuthorizationEducator = catchAsync(async (req, res, next) => {
   //console.log(req.user);
   const authorized = req.Educator && req.params.educatorId == req.Educator._id;
   if (!authorized) {
