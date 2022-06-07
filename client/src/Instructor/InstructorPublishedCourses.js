@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import {FormControl,InputLabel,Select,MenuItem} from "@mui/material"
 import AuthContext from "../context/AuthContext";
+import {Pagination,Stack} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
@@ -20,8 +21,14 @@ const InstructorPublishedCourses = () => {
   const handleChange = (event) => {
     setSort(event.target.value);
   };
+   const handlePaginationChange = (event,page) => {
+    console.log(page)
+    setPageNumber(page);
+  }
   const { User } = useContext(AuthContext);
   const [publishedCourses, setPublishedCourses] = React.useState([]);
+  const [numberOfPages,setNumberOfPages] = React.useState(0);
+  const [pageNumber,setPageNumber]  = React.useState(1);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
@@ -92,7 +99,6 @@ const InstructorPublishedCourses = () => {
         </Select>
       </FormControl>
     </Box>
-    </Box>
     <Box sx={{ display: "flex", flexDirection: "column" }} width="100">
       {publishedCourses.map((course) => (
         <Box
@@ -120,9 +126,14 @@ const InstructorPublishedCourses = () => {
                 Unpublish
               </Button>
             </Box>
-
+      <Box sx={{ display: "flex", flexDirection: "column" ,justifyContent:"center" ,alignItems:"center",position:"relative"}} width="100" >
+        <Stack spacing={2} >
+            <Pagination count={numberOfPages} onChange={handlePaginationChange} shape="rounded" />
+        </Stack>
+      </Box>
         </Box>
       ))}
+
     </Box>
     </>
   );

@@ -1,4 +1,6 @@
-import React, { useEffect, useState,useContext } from "react";
+
+import React, { useEffect, useState ,useContext} from "react";
+// import useTheme from '@mui/material/styles';
 import {
   Typography,
   Grid,
@@ -7,7 +9,9 @@ import {
   CardContent,
   CardActions,
   Button,
-  Box,
+  IconButton,
+
+  Box
 } from "@mui/material";
 import {
   FormControl,
@@ -32,7 +36,7 @@ const Courses = () => {
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
-    setCourses((prevunpublishedcourses) => {
+    setPublishedCourses((prevunpublishedcourses) => {
       return courses;
     });
   };
