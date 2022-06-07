@@ -8,6 +8,9 @@ import {
   CardActions,
   LinearProgress,
   linearProgressClasses,
+  Pagination,
+  Stack,
+
 } from "@mui/material";
 import AuthContext from "../context/AuthContext";
 import { styled } from "@mui/material/styles";
@@ -29,6 +32,8 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const InstructorUnpublishedCourses = () => {
   const { User } = useContext(AuthContext);
   const [unpublishedCourses, setUnpublishedCourses] = React.useState([]);
+  const [numberOfPages,setNumberOfPages] = React.useState(0);
+  const [pageNumber,setPageNumber]  = React.useState(1);
   const host = "http://localhost:8000";
   const courseUpdate = (courses) => {
     console.log("State function called!");
@@ -61,7 +66,13 @@ const InstructorUnpublishedCourses = () => {
   useEffect(() => {
     getUnpublishedCourses();
   }, []);
+
+  const handlePaginationChange = (event,page) => {
+    console.log(page)
+    setPageNumber(page);
+  }
   return (
+    <>
     <Box sx={{ display: "flex", flexDirection: "column" }} width="100">
       {unpublishedCourses.map((course) => (
         <Box
@@ -85,8 +96,13 @@ const InstructorUnpublishedCourses = () => {
           </Box>
         </Box>
       ))}
-    </Box>
+      </Box>
+    	<Box sx={{ display: "flex", flexDirection: "column" ,justifyContent:"center" ,alignItems:"center",position:"relative"}} width="100" >
+        <Stack spacing={2} >
+            <Pagination count={numberOfPages} onChange={handlePaginationChange} shape="rounded" />
+        </Stack>
+      </Box>
+    </>
   );
-};
-
+ };
 export default InstructorUnpublishedCourses;

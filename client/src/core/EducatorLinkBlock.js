@@ -1,6 +1,7 @@
 import React from 'react'
-import {Box,Typography,Container,Button} from "@mui/material"
+import {Box,Typography,Container,Button,Stack,Pagination} from "@mui/material"
 import { Link } from 'react-router-dom'
+
 
 const EducatorLinkBlock = () => {
   return (
@@ -17,6 +18,9 @@ const EducatorLinkBlock = () => {
       <Button >Educators Login</Button>
     </Link>
     </Box>
+    <Stack spacing={2} justifyContent="center" alignItems="center">
+      <Pagination count={10} shape="rounded" />
+    </Stack>
   </Box>
   )
 }
