@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Card, CardContent, Grid,Dialog,DialogActions,DialogTitle,DialogContent,DialogContentText } from "@mui/material";
+import { Box,Card, CardContent, Grid,Dialog,DialogActions,DialogTitle,DialogContent,DialogContentText } from "@mui/material";
 import classes from "./SignIn.module.css";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate=useNavigate();
-    const [openDialog,setOpenDialog] = useState(false);
+  const [openDialog,setOpenDialog] = useState(false);
+  const [formErrors,setFormErrors] = useState({});
+  const [isSubmit,setIsSubmit] = useState(false);
   const host = "http://localhost:8000";
   const [credentials, setCredentials] = useState({
     name: "",
@@ -33,6 +35,9 @@ const SignUp = () => {
   };
 
   const clickSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmit(true);
+    setFormErrors(validate(credentials));
     if (checkRePassword()) {
       const newuserdata = {
         name: credentials.name,
@@ -57,6 +62,37 @@ const SignUp = () => {
       console.log("password not match");
     }
   };
+  const validate =  (values) => {
+    const errors = {};
+    const regex_email = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    if(!values.name)
+    {
+      errors.name = "Name is required";
+    }
+    if(!values.email){
+      errors.email = "Email is required";
+    }
+    else if(!regex_email.test(values.email))
+    {
+      errors.email = "This is not a valid email";
+    }
+    if(!values.password){
+      errors.password = "Password is required";
+    }
+    if(!values.rePassword)
+    {
+      errors.rePassword = "Re enter the password";
+    }
+
+    return errors;
+  }
+useEffect(()=> {
+  console.log(formErrors);
+  if(Object.keys(formErrors).length === 0 && isSubmit)
+  {
+      console.log(credentials);
+  }
+})
   return (
     <>
       <Card style={{ boxShadow: "none" }} sx={{ mt: 10 }}>
@@ -82,6 +118,9 @@ const SignUp = () => {
                 style={{ width: 400 }}
               />
             </Grid>
+            <Box style={{ color: 'red' }}>
+        <p>{formErrors.name}</p>
+        </Box> 
             <br />
             <Grid item>
               <TextField
@@ -95,6 +134,9 @@ const SignUp = () => {
                 style={{ width: 400 }}
               />
             </Grid>
+            <Box style={{ color: 'red' }}> 
+        <p>{formErrors.email}</p>
+        </Box>
             <br />
             <Grid item>
               <TextField
@@ -108,6 +150,9 @@ const SignUp = () => {
                 style={{ width: 400 }}
               />
             </Grid>
+            <Box style={{ color: 'red' }}> 
+        <p>{formErrors.password}</p>
+        </Box>
             <br />
             <Grid item>
               <TextField
@@ -121,6 +166,9 @@ const SignUp = () => {
                 style={{ width: 400 }}
               />
             </Grid>
+            <Box style={{ color: 'red' }}> 
+          <p>{formErrors.rePassword}</p>
+          </Box> 
           </Grid>
         </CardContent>
         <div className={classes["submit-btn-contianer"]}>

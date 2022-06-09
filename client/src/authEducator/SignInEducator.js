@@ -1,14 +1,17 @@
-import React,{useContext, useState} from 'react'
+import React,{useContext, useState,useEffect} from 'react'
 import { Dialog,DialogTitle,DialogContent,DialogContentText,TextField,Button,DialogActions } from '@mui/material'
 import{Link, useNavigate} from 'react-router-dom';
 import classes from "../authStudent/SignIn.module.css";
 import AuthContext from '../context/AuthContext';
+import { SliderValueLabelUnstyled } from '@mui/base';
 
 const SignInEducator = () => {
     const host = "http://localhost:8000";
     const contextval=useContext(AuthContext);
     const navigate=useNavigate()
     const [openDialog,setOpenDialog] = useState(true);
+    const [formErrors,setFormErrors] = useState({});
+    const [isSubmit,setIsSubmit] = useState(false);
     const [credentials, setCredentials] = useState({
         email:"",
         password:""
@@ -22,6 +25,8 @@ const SignInEducator = () => {
     }
     const clickSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmit(true);
+        setFormErrors(validate(credentials));
         const educatordata = {
           email: credentials.email ,
           password: credentials.password ,
@@ -43,6 +48,28 @@ const SignInEducator = () => {
           localStorage.setItem("isInstructor", true);
           navigate(`/Instructor`);
       }
+    const validate =  (values) => {
+      const errors = {};
+      const regex_email = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      if(!values.email){
+        errors.email = "Email is required";
+      }
+      else if(!regex_email.test(values.email))
+      {
+        errors.email = "This is not a valid email";
+      }
+      if(!values.password){
+        errors.password = "Password is required";
+      }
+      return errors;
+    }
+  useEffect(()=> {
+    console.log(formErrors);
+    if(Object.keys(formErrors).length === 0 && isSubmit)
+    {
+        console.log(credentials);
+    }
+  })
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog}>
     <DialogTitle>Login Educator Account</DialogTitle>
@@ -57,6 +84,7 @@ const SignInEducator = () => {
                 onChange={onChange}
                 style={{ width: 400 ,marginBottom:15}}
               />
+              <p style={{ color: 'red' }}>{formErrors.email}</p>
               <br/>
               <TextField
                 id="password"
@@ -68,6 +96,7 @@ const SignInEducator = () => {
                 onChange={onChange}
                 style={{ width: 400,marginBottom:15 }}
               />
+              <p style={{ color: 'red' }}>{formErrors.password}</p>
     </DialogContent>
     <DialogActions>
         <Button onClick={clickSubmit}>Submit</Button>

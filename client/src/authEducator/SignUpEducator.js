@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,13 +7,18 @@ import {
   TextField,
   Button,
   DialogActions,
+  Box
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import classes from "../authStudent/SignIn.module.css";
+import { color } from "@mui/system";
+
 
 const SignUpEducator = () => {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(true);
+  const [formErrors,setFormErrors] = useState({});
+  const [isSubmit,setIsSubmit] = useState(false);
   const host = "http://localhost:8000";
   const [credentials, setCredentials] = useState({
     name: "",
@@ -36,6 +41,8 @@ const SignUpEducator = () => {
   };
   const clickSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmit(true);
+    setFormErrors(validate(credentials));
     if (checkRePassword()) {
       const neweducatordata = {
         name: credentials.name,
@@ -60,6 +67,37 @@ const SignUpEducator = () => {
       console.log("password not match");
     }
   };
+  const validate =  (values) => {
+    const errors = {};
+    const regex_email = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    if(!values.name)
+    {
+      errors.name = "Name is required";
+    }
+    if(!values.email){
+      errors.email = "Email is required";
+    }
+    else if(!regex_email.test(values.email))
+    {
+      errors.email = "This is not a valid email";
+    }
+    if(!values.password){
+      errors.password = "Password is required";
+    }
+    if(!values.rePassword)
+    {
+      errors.rePassword = "Re enter the password";
+    }
+
+    return errors;
+  }
+  useEffect(()=> {
+    console.log(formErrors);
+    if(Object.keys(formErrors).length === 0 && isSubmit)
+    {
+        console.log(credentials);
+    }
+  })
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog}>
       <DialogTitle>Create New Educator Account</DialogTitle>
@@ -74,6 +112,9 @@ const SignUpEducator = () => {
           onChange={onChange}
           style={{ width: 400, marginBottom: 15 }}
         />
+        <Box style={{ color: 'red' }}>
+        <p>{formErrors.name}</p>
+        </Box> 
         <br />
         <TextField
           id="email"
@@ -85,6 +126,9 @@ const SignUpEducator = () => {
           onChange={onChange}
           style={{ width: 400, marginBottom: 15 }}
         />
+        <Box style={{ color: 'red' }}> 
+        <p>{formErrors.email}</p>
+        </Box> 
         <br />
         <TextField
           id="password"
@@ -96,6 +140,9 @@ const SignUpEducator = () => {
           onChange={onChange}
           style={{ width: 400,marginBottom:15 }}
         />
+        <Box style={{ color: 'red' }}> 
+        <p>{formErrors.password}</p>
+        </Box> 
         <br/>
         <TextField
                 id="repassword"
@@ -107,6 +154,9 @@ const SignUpEducator = () => {
                 onChange={onChange}
                 style={{ width: 400 }}
               />
+          <Box style={{ color: 'red' }}> 
+          <p>{formErrors.rePassword}</p>
+          </Box> 
       </DialogContent>
       <DialogActions>
         <Button onClick={clickSubmit}>Submit</Button>
