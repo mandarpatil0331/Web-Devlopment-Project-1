@@ -2,79 +2,76 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
-const LessonSchema = new Schema(
-    {
-      name: {
-        type: String,
-        required: [true, "Title is required"],
-      },
-      description: {
-        type: String,
-        required: [true, "Description is required"]
-      },
-      resourceUrl: {
-        type: String,
-      },
-      assignmentUrl:
-      [
-          {
-             type: String
-          }
-      ]
-    },
-    { timestamps: true }
-  );
-
-const courseSchema = new Schema({
+const courseSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: [true, "Name is required"],
+      type: String,
+      required: [true, "Name is required"],
     },
     instructor: {
-        type:mongoose.Schema.ObjectId,
-        ref:"Educator"
+      type: mongoose.Schema.ObjectId,
+      ref: "Educator",
     },
-    description:
-    {
-        type:String,
-        default:null
+    objective:{
+      type: String,
+      required: [true, "Objective is required"],
     },
-    image:
-    {
+    description: {
+      type: String,
+    },
+    image: {
       data: Buffer,
-    contentType: String,
-    }
-    ,
-    published:
-    {
+      contentType: String,
+    },
+    published: {
       type: Boolean,
       default: false,
-    }
-,
-    enrollments:
-    [
-        {
-            type:mongoose.Schema.ObjectId,
-            ref:"Enrollment"
-        },
-    ],
-    totalEnrollments:{
-      total: Number,
-      default:0
     },
-    lessons: [LessonSchema],
-    category:[{
-      type:String
+    enrollments: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Enrollment",
+      },
+    ],
+    reviews:[{
+      type: mongoose.Schema.ObjectId,
+      ref: "ReviewRating",
     }],
-    price:{
-      type:Number,
-      min:0
-    }
-    
-},{timestamps:true});
+    totalEnrollments: {
+      type: Number,
+      default: 0,
+    },
+    avgRatings:{
+      type: mongoose.Decimal128,
+      default: 0,
+    },
+    sections:[{
+      type: mongoose.Schema.ObjectId,
+      ref: "Section",
+    }],
+    courseGoals:[{
+      type: String,
+    }],
+    totalContentTime:{
+      type: mongoose.Decimal128,
+      default: 0,
+    },
+    category: [
+      {
+        type: String,
+      },
+    ],
+    requirements: [{
+      type: String,
+    }],
+    price: {
+      type: Number,
+      min: 0,
+    },
+  },
+  { timestamps: true }
+);
 
 const Course = mongoose.model("Course", courseSchema);
-const Lesson = mongoose.model('Lesson', LessonSchema)
-
 
 module.exports = Course;

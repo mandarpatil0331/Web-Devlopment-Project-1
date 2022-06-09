@@ -7,10 +7,15 @@ import {
   CardActions,
   Button,
   Box,
+  LinearProgress,
+  IconButton,
+  Grid,GridItem
 } from "@mui/material";
-import classes from "./Courses.module.css";
+import classes from "./SpecificCourse/Course.module.css";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import MyLearningCards from "../Student/MyLearning/MyLearningCards";
 
 const MyCourses = () => {
   const { User } = useContext(AuthContext);
@@ -24,7 +29,7 @@ const MyCourses = () => {
   };
   const getMyCourses = async () => {
     try {
-      let response = await fetch(`${host}/api/courses/${User._id}`, {
+      let response = await fetch(`${host}/api/${User._id}/enrollments?LIMIT=3&sort_select=-updatedAt`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,19 +51,20 @@ const MyCourses = () => {
   return (
     <>
       <Box display="flex" flexDirection="column">
-        <Box display="flex" justifyContent="flex-end" sx={{mr:5,mt:5}}>
+        <Box display="flex" justifyContent="flex-end" sx={{ mr: 5, mt: 5 }}>
           <Link to={`Student/${User._id}`}>
             <Button>My learning</Button>
           </Link>
         </Box>
         <Box display="flex" justifyContent="space-around" alignItems="center">
           {myEnrollments.map((enrollment) => (
-            <h1 key={enrollment.course._id}>{enrollment.course.name}</h1>
+            <MyLearningCards enrollment={enrollment} key={enrollment.course._id} imageWidth={150} width={450}/>
           ))}
         </Box>
       </Box>
     </>
   );
 };
+
 
 export default MyCourses;

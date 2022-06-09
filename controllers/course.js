@@ -3,16 +3,88 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Student = require("../models/student");
 const Enrollment = require("../models/enrollment");
+const Educator=require("../models/educator");
+
+exports.publishedCourses = catchAsync(async (req, res) => {
+  page = req.query.page || 1;
+  let Sort_select = req.query.sort_select;
+  const LIMIT = 4;
+  const totalPublishedCourses = await Course.countDocuments({
+    published: true,
+  });
+  const courses = await Course.find({ published: true })
+    .sort(`${Sort_select}`)
+    .skip((page - 1) * LIMIT)
+    .limit(LIMIT)
+    .select(
+      "-image -enrollments -sections -reviews"
+    )
+    .populate([
+      {
+        path: "instructor",
+        model: "Educator",
+        select: "name",
+      },
+    ]);
+  res.status(201).json({
+    status: "success",
+    numberOfPages: Math.ceil(totalPublishedCourses / LIMIT),
+    data: {
+      courses: courses,
+    },
+  });
+});
+
+exports.publicSpecificCourse = catchAsync(async (req, res, next) => {
+  const course = await Course.find({
+    published: true,
+    _id: req.params.CourseId,
+  })
+    .select(
+      "-enrollments"
+    )
+    .populate([
+      {
+        path: "instructor",
+        model: "Educator",
+        select: "name description",
+      },
+      {
+        path: "sections",
+        model: "Section",
+        populate:{
+            path:"lessons",
+            model:"Lesson",
+            select:"name"
+        },
+        select: "name lessons totalTime",
+      },
+      {
+        path: "reviews",
+        model: "ReviewRating",
+        select: "review rating",
+      },
+    ]);
+  res.status(201).json({
+    status: "success",
+    data: {
+      course: course,
+    },
+  });
+});
 
 exports.createCourse = catchAsync(async (req, res, next) => {
   const course = {
     name: req.body.name,
-    description: req.body.description,
+    objective:req.body.objective,
     category: req.body.category,
     instructor: req.Educator._id,
   };
   const newCourse = await Course.create(course);
   await newCourse.save();
+  const currEducator=await Educator.findById(req.Educator._id);
+  currEducator.courses.push(newCourse);
+  await currEducator.save();
   res.status(201).json({
     status: "success",
     // jwt: token,
@@ -23,14 +95,21 @@ exports.createCourse = catchAsync(async (req, res, next) => {
 });
 
 exports.unpublishedCourses = catchAsync(async (req, res, next) => {
-  const LIMIT=3
-  const Sort_select=req.query.sort_select;
-  page=req.query.page||1;
-  const totalUnpublishedInstructorCourses = await Course.countDocuments({published:false,instructor:req.Educator._id});
+  const LIMIT = 3;
+  const Sort_select = req.query.sort_select;
+  page = req.query.page || 1;
+  const totalUnpublishedInstructorCourses = await Course.countDocuments({
+    published: false,
+    instructor: req.Educator._id,
+  });
   const courses = await Course.find({
     instructor: req.Educator._id,
     published: false,
-  }).sort(`${Sort_select}`).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
+  })
+    .sort(`${Sort_select}`)
+    .skip((page - 1) * LIMIT)
+    .limit(LIMIT)
+    .populate("instructor");
   if (!courses) {
     return next(new AppError("No Courses Found", 401));
   }
@@ -58,11 +137,11 @@ exports.courseByID = catchAsync(async (req, res, next) => {
 exports.editBasics = catchAsync(async (req, res, next) => {
   const course = req.Course;
   // console.log(course.lessons);
-  const { name, category, description } = req.body;
+  const { name, category, obective } = req.body;
   try {
     currcourse = await Course.findByIdAndUpdate(
       course._id,
-      { name: name, category: category, description: description },
+      { name: name, category: category, objective: objective },
       { runValidators: true, returnDocument: "after" }
     );
     await currcourse.save();
@@ -96,6 +175,7 @@ exports.isPublished = catchAsync(async (req, res, next) => {
   }
   next();
 });
+
 exports.isUnpublished = catchAsync(async (req, res, next) => {
   const isUnpublished = req.Course && req.Course.published === false;
   if (!isUnpublished) {
@@ -103,6 +183,7 @@ exports.isUnpublished = catchAsync(async (req, res, next) => {
   }
   next();
 });
+
 exports.isInstructor = catchAsync(async (req, res, next) => {
   const isInstructor =
     req.Course &&
@@ -123,28 +204,22 @@ exports.imgCourse = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.publishedCourses = catchAsync(async(req, res) => {
-  page=req.query.page || 1;
-  let Sort_select=req.query.sort_select;
+exports.specificEducatorPublishedCourses = catchAsync(async (req, res) => {
+  page = req.query.page || 1;
+  let Sort_select = req.query.sort_select;
   const LIMIT = 4;
-  const totalPublishedCourses = await Course.countDocuments({published:true});
-  const courses = await Course.find({published:true}).sort( `${Sort_select}` ).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
-  res.status(201).json({
-    status: "success",
-    numberOfPages: Math.ceil(totalPublishedCourses / LIMIT),
-    // jwt: token,
-    data: {
-      courses: courses,
-    },
+  const totalPublishedInstructorCourses = await Course.countDocuments({
+    published: true,
+    instructor: req.Educator._id,
+  });
+  const courses = await Course.find({
+    published: true,
+    instructor: req.Educator._id,
   })
-})
-
-exports.specificEducatorPublishedCourses = catchAsync(async(req, res) => {
-  page=req.query.page || 1;
-  let Sort_select=req.query.sort_select;
-  const LIMIT = 4;
-  const totalPublishedInstructorCourses = await Course.countDocuments({published:true,instructor:req.Educator._id});
-  const courses = await Course.find({published:true,instructor: req.Educator._id}).sort( `${Sort_select}` ).skip((page-1)*LIMIT).limit(LIMIT).populate("instructor");
+    .sort(`${Sort_select}`)
+    .skip((page - 1) * LIMIT)
+    .limit(LIMIT)
+    .populate("instructor");
   res.status(201).json({
     status: "success",
     // jwt: token,
@@ -152,14 +227,14 @@ exports.specificEducatorPublishedCourses = catchAsync(async(req, res) => {
     data: {
       courses: courses,
     },
-  })
-})
+  });
+});
 
-exports.changePublishStatus=catchAsync(async (req, res, next) => {
+exports.changePublishStatus = catchAsync(async (req, res, next) => {
   //remove all enrollemnts related to course first
   const currCourse = await Course.findByIdAndUpdate(
     req.Course._id,
-    { published:false },
+    { published: false },
     { runValidators: true, returnDocument: "after" }
   );
   await currCourse.save();
@@ -169,17 +244,7 @@ exports.changePublishStatus=catchAsync(async (req, res, next) => {
     data: {
       course: currCourse,
     },
-  })
+  });
 });
-exports.studentEnrollments = catchAsync(async (req, res, next) => {
-  const student = req.Student
-  const enrollment =await Enrollment.find({student:student._id}).populate({path:'course'});
-  res.status(201).json({
-  status: "success",
-  // jwt: token,
-  data: {
-    enrollments: enrollment
-  },
-})
-});
+
 

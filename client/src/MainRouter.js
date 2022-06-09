@@ -17,7 +17,7 @@ import InstructorMessages from "./Instructor/InstructorMessages";
 import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
 import EditCourse from "../src/course/EditCourse"
-import MyLearning from "./Student/MyLearning";
+import MyLearning from "./Student/MyLearning/MyLearning";
 import MyProfile from "./Student/MyProfile";
 import MyPublicProfile from "./Student/MyPublicProfile";
 import MyPhoto from "./Student/MyPhoto";
@@ -33,7 +33,7 @@ const MainRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<SharedLayout />}>
-        <Route index element={<Home />} />
+        <Route index element={<Home/>} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/Educator" element={<EducatorHome/>} />
@@ -41,7 +41,7 @@ const MainRouter = () => {
         <Route path="/Educator/SignUp" element={<SignUpEducator/>} />
         <Route path="/Course/:CourseId" element={<PublicSpecificCourse/>} />
       </Route>
-      <Route path="/Student/:StudentId" element={<SharedLayout />}>
+      <Route path="/Student/:StudentId" element={<SharedLayout/>}>
         <Route index element={<MyLearning/>} />
         <Route path="Profile" element={<MyProfile/>} >
           <Route path="PublicProfile" element={<MyPublicProfile/>} />
