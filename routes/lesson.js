@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {requiresSigninEducator} = require("../controllers/auth");
+const {requiresSigninEducator, requiresSigninStudent} = require("../controllers/auth");
 const { courseByID,isInstructor,isUnpublished } = require("../controllers/course");
 const {newLesson,editBasicsLesson,removeLesson}=require("../controllers/lesson");
 

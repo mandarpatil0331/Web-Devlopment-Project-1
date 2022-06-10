@@ -16,6 +16,7 @@ import {
   Stack,
   Pagination,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 import MyLearningCards from "./MyLearningCards";
 import MyLearningSortBox from "./MyLearningSortBox";
@@ -88,12 +89,16 @@ const MyLearning = () => {
         >
           <Grid item xs={5}>
             {myEnrollments.slice(0, 4).map((enrollment) => (
+              <Link to={`/Student/${User._id}/${enrollment._id}`}>
               <MyLearningCards enrollment={enrollment} key={enrollment.course._id} imageWidth={180}/>
+              </Link>
             ))}
           </Grid>
           <Grid item xs={5}>
             {myEnrollments.slice(4, 8).map((enrollment) => (
+              <Link to={`/Student/${User._id}/${enrollment._id}`}>
               <MyLearningCards enrollment={enrollment} key={enrollment.course._id} imageWidth={180}/>
+              </Link>
             ))}
           </Grid>
         </Grid>

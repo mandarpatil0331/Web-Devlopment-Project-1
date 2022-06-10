@@ -4,6 +4,23 @@ const Course = require("../models/course");
 const Section = require("../models/section");
 const Lesson = require("../models/lesson");
 
+exports.readLesson = catchAsync(async (req, res, next) => {
+  const lesson = await Lesson.findById(req.params.LessonId);
+  const section = await Section.findById(lesson.section);
+  const course = await Course.findById(section.course);
+  if(JSON.stringify(course._id) === JSON.stringify(req.Enrollment.course._id)) {
+  res.status(200).json({
+    status: "success",
+    data: {
+      lesson,
+    },
+  });
+} else
+{
+  return next(new AppError("You are not enrolled in this course", 401));
+}});
+
+
 exports.editBasicsLesson = catchAsync(async (req, res, next) => {
   const course = req.Course;
   // console.log(course.lessons);
@@ -47,6 +64,7 @@ exports.newLesson = catchAsync(async (req, res, next) => {
     description: req.body.description,
     resourceUrl: req.body.resourceUrl,
     timeRequired: req.body.timeRequired,
+    section: req.params.SectionId,
   };
   // console.log(req.body);
   const newLesson = await Lesson.create(lesson);

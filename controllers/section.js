@@ -6,7 +6,8 @@ const Section = require("../models/section");
 exports.newSection = catchAsync(async (req, res, next) => {
     const section = {
       name: req.body.name,
-      totalTime:0
+      totalTime:0,
+      course: req.params.courseId,
     };
     // console.log(req.body);
     const newSection = await Section.create(section);

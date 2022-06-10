@@ -3,6 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const Enrollment = require("../models/enrollment");
 const AppError = require("../utils/appError");
 const Course = require("../models/course");
+const { populate } = require("../models/student");
 
 exports.createEnrollment = catchAsync(async (req, res, next) => {
   const enrollment = {
@@ -47,19 +48,19 @@ exports.enrollmentById = catchAsync(async (req, res, next) => {
     {
       path: "course",
       model: "Course",
+      populate:{
+        path:"sections",
+        model:"Section",
+        populate:{
+          path:"lessons",
+          model:"Lesson",
+        }
+      },
       select: "-image -enrollments",
     },
     {
       path: "student",
       model: "Student",
-    },
-    {
-      path: "course.sections",
-      model: "Section",
-    },
-    {
-      path: "course.sections.lessons",
-      model: "Lesson",
     },
   ]);
   // console.log(course);

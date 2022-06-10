@@ -16,10 +16,15 @@ const SectionSchema = new Schema(
         ref: "Assignment",
       }],
       totalTime:{
-        type: mongoose.Decimal128,
-        default: 0,
+        hours:{type:Number,default:0},
+        minutes:{type:Number,default:0},
+      },
+      course:{
+        type: mongoose.Schema.ObjectId,
+        ref: "Course",
       }
     },
+
     { timestamps: true }
   );
   

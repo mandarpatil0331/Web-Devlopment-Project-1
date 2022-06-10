@@ -15,6 +15,14 @@ const LessonSchema = new Schema(
     resourceUrl: {
       type: String,
     },
+    time:{
+      hours:{type:Number,default:0},
+      minutes:{type:Number,default:0},
+    },
+    section:{
+      type: Schema.Types.ObjectId,
+      ref: "Section"
+    }
   },
   { timestamps: true }
 );

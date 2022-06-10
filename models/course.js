@@ -42,7 +42,7 @@ const courseSchema = new Schema(
       default: 0,
     },
     avgRatings:{
-      type: mongoose.Decimal128,
+      type: Number,
       default: 0,
     },
     sections:[{
@@ -53,8 +53,8 @@ const courseSchema = new Schema(
       type: String,
     }],
     totalContentTime:{
-      type: mongoose.Decimal128,
-      default: 0,
+      hours:{type:Number,default:0},
+      minutes:{type:Number,default:0},
     },
     category: [
       {
