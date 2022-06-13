@@ -48,6 +48,14 @@ exports.enrollmentById = catchAsync(async (req, res, next) => {
   req.Enrollment = enrollment;
   next();
 });
+exports.lessonById = catchAsync(async(req, res,next)=>{
+  const lesson  = await Lesson.findById(req.params.enrollmentId).populate('lesson');
+  if (!lesson) {
+    return next(new AppError("Enrollment is Not Found", 401));
+  }
+  req.Lesson = lesson;
+  next();
+});
 exports.isEnrolled = catchAsync(async (req, res, next) => {
   const student = req.Student;
   const enrolled = student.enrollments.find((ele) => {
@@ -102,8 +110,18 @@ exports.createNote = catchAsync(async (req, res, next) => {
         { $push: { notes: note } },
         { new: true }
       );
+    await student.save();
 })
 
+exports.editNote = catchAsync(async (req, res, next) => {
+  const {name,description}=req.body;
+  const lesson  = req.Enrollment.course.lessons.find((lesson)=>{
+    return  lesson._id === req.params._id
+ })
+    const note = {name:name,description:description,lesson:lesson};
+    lesson.overwrite(note);
+    await lesson.save();
+})
 exports.isComplete = catchAsync(async (req, res, next) => {
     const complete = req.Enrollment.complete;
     if(!complete)
@@ -112,7 +130,12 @@ exports.isComplete = catchAsync(async (req, res, next) => {
     }
     next();
 })
-
+exports.deleteNote = catchAsync(async (req, res, next) => {
+  const lesson  = req.Enrollment.course.lessons.find((lesson)=>{
+    return  lesson._id === req.params._id
+ })
+ const deletedNote  = await le 
+})
 exports.createReview = catchAsync(async (req, res, next) => {
     const {rating,review} = req.body;
     const enrollment = await Enrollment.findById(req.params.enrollmentId);
@@ -122,3 +145,40 @@ exports.createReview = catchAsync(async (req, res, next) => {
     res.send(enrollment);
 }
 )
+exports.deleteReview = catchAsync(async (req, res, next) => {
+  try {
+    const enrollment = await Enrollment.findById(req.params.enrollmentId);
+    const deletedMessage = await enrollment.deleteOne({ _id: notes._id });
+    res.status(200).json({
+     status: "success",
+     data: {
+       deletedMessage,
+     },
+   });
+    }
+    catch (err) {
+      return next(new AppError("Something went wrong while Updating", 401));
+      }})
+exports.createMessage = catchAsync( async(req,res,next) => {
+ const {messages} = req.body;
+ const enrollment = await Enrollment.findById(req.params.enrollmentId);
+ enrollment.messages = messages
+ await enrollment.save();
+ res.send(enrollment);
+}
+)
+exports.deleteMessage = catchAsync( async(req,res,next) => {
+  try {
+ const enrollment = await Enrollment.findById(req.params.enrollmentId);
+ const deletedMessage = await enrollment.deleteOne({ _id: notes._id });
+ res.status(200).json({
+  status: "success",
+  data: {
+    deletedMessage,
+  },
+});
+ }
+catch (err) {
+return next(new AppError("Something went wrong while Updating", 401));
+}})
+
