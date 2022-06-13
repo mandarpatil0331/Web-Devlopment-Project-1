@@ -1,98 +1,162 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Lesson from "./Lesson";
+import React, { useEffect, useState } from "react";
 import {
-  Box,
   Grid,
+  Box,
   Card,
   CardMedia,
+  Rating,
   CardContent,
   Typography,
   CardActions,
   Button,
+  List,
+  ListItem,
 } from "@mui/material";
-import classes from "./Course.module.css";
-import List from "@mui/material/List";
+import { useParams } from "react-router-dom";
+import Section from "./Section";
 
 const PublicSpecificCourse = () => {
+  const [course, setCourse] = useState({});
+  const [sectionsDisplay, setSectionsDisplay] = useState(7);
+  const [view,setView] = useState("More");
   let params = useParams();
   const host = "http://localhost:8000";
-  const [course, setCourse] = useState({ instructor: {} });
+  const updateCourse = (editCourse) => {
+    setCourse((prevCourse) => {
+      console.log(editCourse);
+      return editCourse;
+    });
+  };
+  const displayMore=()=>{
+    setSectionsDisplay(course.sections.length);
+    setView("Less");
+  };
+  const displayLess=()=>{
+    setSectionsDisplay(7);
+    setView("More");
+  };
+  const getCourse = async () => {
+    try {
+      let response = await fetch(`${host}/api/courses/${params.CourseId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const svrres = await response.json();
+      console.log(svrres.data.course[0].instructor.name);
+      updateCourse(svrres.data.course[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getCourse();
+  }, [params.courseId]);
+
   return (
-    <>
+    course &&
+    course.instructor && (
       <Grid
         container
-        direction="row"
-        justifyContent="space-around"
-        alignItems="center"
+        spacing={2}
+        sx={{ display: "flex", justifyContent: "space-evenly", mt: 5, mr: 2 }}
       >
-        <Box className={classes["main-info-container"]}>
+        <Grid item xs={7}>
+          <Box sx={{ mb: 5 }}>
+            <Box sx={{ mb: 0.5 }}>
+              <Typography variant="h3" align="left">
+                {course.name}
+              </Typography>
+            </Box>
+            <Box sx={{ mb: 0.1 }}>
+              <Typography variant="h5" align="left">
+                {course.objective}
+              </Typography>
+            </Box>
+            <Box
+              sx={{ mb: 0.25 }}
+              display="flex"
+              alignItems="center"
+              flexDirection="row"
+              justifyContent="flex-start"
+            >
+              {course.Ratings}
+              <Rating
+                name="ratings"
+                value={course.Ratings}
+                sx={{ paddingLeft: 2, paddingRight: 2 }}
+                readOnly
+              />
+              <Typography>{course.totalEnrollments}</Typography>
+            </Box>
+            <Box sx={{ mb: 0.2 }}>{course.instructor.name}</Box>
+            <Box sx={{ mb: 0.5 }}>{course.updatedAt}</Box>
+          </Box>
+          <Box>
+            <Box sx={{ mb: 2 }}>
+              <Typography>What You'LL Learn</Typography>
+              <Box sx={{padding:2}} >
+                {course.courseGoals && course.courseGoals.map((goal,index)=>{
+                  return (
+                    <Box sx={{padding:2}} key={index}>
+                      {goal}
+                    </Box>
+                  )
+                })}
+              </Box>
+            </Box>
+            <Box>
+              <List>
+                {course.sections &&
+                  course.sections.slice(0,sectionsDisplay).map((section, index) => {
+                    return (
+                      <Section section={section} params={params} key={section._id} />
+                    );
+                  })}
+                  {course.sections && course.sections.length > 7 && (
+                    <ListItem sx={{display:"flex",justifyContent:"center",alignItems:"center"}} key="MoreorLessButton">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={view==="less"?displayLess:displayMore}
+                      >
+                        View {view}
+                      </Button>
+                    </ListItem>
+                  )}
+              </List>
+            </Box>
+            <Box>{course.description}</Box>
+          </Box>
+        </Grid>
+        <Grid item xs={3}>
           <Card>
             <CardMedia
-              className={classes["card-media"]}
               component="img"
-              height="250"
-              src={`${host}/api/courses/image/${params.courseId}`}
+              height="120"
+              image="https://ychef.files.bbci.co.uk/1600x900/p09f3lcg.webp"
               alt="course image"
             />
             <CardContent>
-              <Typography
-                variant="h6"
-                sx={{ mb: 1 }}
-                align="center"
-                className={classes["course-card-nametypo"]}
-              >
-                {course.name}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ mb: 0.2 }}
-                align="center"
-                color="text.secondary"
-              >
-                {course.category}
-              </Typography>
-              <Typography variant="h5" align="left">
-                {course.price}$122
-              </Typography>
+              <Typography variant="h3">₹{course.price}</Typography>
             </CardContent>
-            <CardActions className={classes.CardActions}>
-              <Button className={classes.btn}>Add To Cart</Button>
-              <Button className={classes.btn}>Buy Now</Button>
+            <CardActions sx={{display:"flex",justifyContent:"space-around"}}>
+              <Button size="large">Add To Cart</Button>
+              <Button size="large">Buy Now</Button>
             </CardActions>
             <CardContent>
-              <Typography
-                variant="body2"
-                sx={{ mb: 0.2 }}
-                align="center"
-                color="text.secondary"
-              >
-                {course.description}
-              </Typography>
+              <Typography>This Course Includes</Typography>
+              <List>
+                <ListItem>1 Course Item</ListItem>
+                <ListItem>2 Course Item</ListItem>
+              </List>
             </CardContent>
           </Card>
-        </Box>
-        <Box className={classes["lesson-info-container"]}>
-          <Typography
-            variant="h5"
-            sx={{ mb: 0.2 }}
-            align="left"
-            color="text.secondary"
-          >
-            Course Content
-          </Typography>
-          <Typography variant="body2" align="left">
-            sections .
-          </Typography>
-          <List>
-            {course.lessons &&
-              course.lessons.map((lesson, index) => {
-                return <Lesson lesson={lesson} params={params} />;
-              })}
-          </List>
-        </Box>
+        </Grid>
       </Grid>
-    </>
+    )
   );
 };
 

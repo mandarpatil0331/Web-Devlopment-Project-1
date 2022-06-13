@@ -6,6 +6,8 @@ const studentRoutes=require("./routes/student");
 const courseRoutes=require("./routes/course");
 const authRoutes=require("./routes/auth");
 const enrollmentRoutes=require("./routes/enrollment")
+const sectionRoutes=require("./routes/section");
+const lessonRoutes=require("./routes/lesson");
 const AppError = require("./utils/appError");
 
 
@@ -19,6 +21,8 @@ app.use("/api", educatorRoutes);
 app.use("/api",studentRoutes);
 app.use("/api",courseRoutes);
 app.use("/api",enrollmentRoutes);
+app.use("/api",lessonRoutes);
+app.use("/api",sectionRoutes);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
