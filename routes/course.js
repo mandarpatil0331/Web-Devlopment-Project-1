@@ -1,5 +1,8 @@
 const express = require("express");
-const { requiresSigninEducator,requiresSigninStudent } = require("../controllers/auth");
+const {
+  requiresSigninEducator,
+  requiresSigninStudent,
+} = require("../controllers/auth");
 const { hasAuthorizationEducator } = require("../controllers/educator");
 const { hasAuthorization } = require("../controllers/student");
 const {
@@ -13,7 +16,8 @@ const {
   specificEducatorPublishedCourses,
   isPublished,
   changePublishStatus,
-  studentEnrollments
+  studentEnrollments,
+  publicSpecificCourse,
 } = require("../controllers/course");
 const {
   newLesson,
@@ -21,56 +25,20 @@ const {
   removeLesson,
 } = require("../controllers/lesson");
 
-
 const router = express.Router();
 
+//For All
 router.route("/courses").get(publishedCourses);
-//Create
-//Lessons,Enrollments,Photos
-router.route("/courses/:studentId").get(requiresSigninStudent,hasAuthorization,studentEnrollments)
+
+router.route("/courses/:CourseId").get(publicSpecificCourse);
+
+//For Educator
+
 router
   .route("/courses/:educatorId/unpublished")
   .get(requiresSigninEducator, hasAuthorizationEducator, unpublishedCourses);
-router
-  .route("/courses/:educatorId/published")
-  .get(
-    requiresSigninEducator,
-    hasAuthorizationEducator,
-    specificEducatorPublishedCourses
-  );
 
-router
-  .route("/courses/:courseId/lessons")
-  .post(requiresSigninEducator, courseByID, isInstructor, newLesson);
-router
-  .route("/courses/:courseId/lessons/:lessonId")
-  .put(
-    requiresSigninEducator,
-    courseByID,
-    isUnpublished,
-    isInstructor,
-    editBasicsLesson
-  )
-  .delete(
-    requiresSigninEducator,
-    courseByID,
-    isUnpublished,
-    isInstructor,
-    removeLesson
-  );
-
-// router.route("/api/courses/image/:courseId").get(imgCourse);
-//Update
-//Photos,Lessons,Enrollments,published
-router
-  .route("/courses/:educatorId/published/:courseId")
-  .put(
-    requiresSigninEducator,
-    hasAuthorizationEducator,
-    courseByID,
-    isPublished,
-    changePublishStatus
-  );
+//BasicEdit
 router
   .route("/courses/:educatorId/unpublished/:courseId/basics")
   .put(
@@ -81,10 +49,42 @@ router
     editBasics
   );
 
-//Delete
-//Photo,Enrollment,Lesson,
+//PublishStatusUpdate
+router
+  .route("/courses/:educatorId/published/:courseId")
+  .put(
+    requiresSigninEducator,
+    hasAuthorizationEducator,
+    courseByID,
+    isPublished,
+    changePublishStatus
+  );
+
+router
+  .route("/courses/:educatorId/published")
+  .get(
+    requiresSigninEducator,
+    hasAuthorizationEducator,
+    specificEducatorPublishedCourses
+  );
+
 router
   .route("/courses/:educatorId/:courseId")
-  .delete(requiresSigninEducator, hasAuthorizationEducator, courseByID, removeCourse);
+  .delete(
+    requiresSigninEducator,
+    hasAuthorizationEducator,
+    courseByID,
+    removeCourse
+  );
+
+//For Student
+
+
+// router.route("/api/courses/image/:courseId").get(imgCourse);
+//Update
+//Photos,Lessons,Enrollments,published
+
+//Delete
+//Photo,Enrollment,Lesson,
 
 module.exports = router;

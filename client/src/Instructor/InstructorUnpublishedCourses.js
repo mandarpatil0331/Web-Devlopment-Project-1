@@ -111,7 +111,7 @@ const InstructorUnpublishedCourses = () => {
             <BorderLinearProgress variant="determinate" value={50} />
           </Box>
           <Box display="flex" justifyContent="center" alignItems="center">
-            <Link to={`/Course/${course._id}/edit/`}>
+            <Link to={`/Course/${course._id}/edit`}>
               <Button>Edit</Button>
             </Link>
           </Box>

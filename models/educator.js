@@ -47,7 +47,7 @@ const educatorSchema = new Schema({
   courses: [{
       type:mongoose.Schema.ObjectId,
       ref:"Course"
-    }],
+    },],
   messages: [
     {
       type:String
@@ -78,6 +78,6 @@ educatorSchema.pre("save", async function (next) {
     return await bcrypt.compare(enteredPassword, correctPassword);
   };
 
-  const Educator = mongoose.model("Educator", educatorSchema);
+const Educator = mongoose.model("Educator", educatorSchema);
 
 module.exports = Educator;
