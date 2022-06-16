@@ -16,7 +16,7 @@ import InstructorPublishedCourses from "./Instructor/InstructorPublishedCourses"
 import InstructorMessages from "./Instructor/InstructorMessages";
 import InstructorPerformance from "./Instructor/InstructorPerformance";
 import InstructorReviewsAndRatings from "./Instructor/InstructorReviewsAndRatings";
-import EditCourse from "../src/course/EditCourse";
+import EditCourse from "./course/EditCourse/EditCourse";
 import MyLearning from "./Student/MyLearning/MyLearning";
 import MyProfile from "./Student/MyProfile";
 import MyPublicProfile from "./Student/MyPublicProfile";
@@ -30,6 +30,11 @@ import PublicSpecificCourse from "./course/SpecificCourse/PublicSpecificCourse";
 import CourseEnrollment from "./Student/AfterEnrollment/CourseEnrollment";
 import CourseDetails from "./Student/AfterEnrollment/CourseDetails";
 import CourseVerticalList from "./Student/AfterEnrollment/CourseVerticalList";
+import Basics from "./course/EditCourse/Basics";
+import GoalsAndDescription from "./course/EditCourse/GoalsAndDescription";
+import Curriculum from "./course/EditCourse/Curriculum/Curriculum";
+import PricingAndPublish from "./course/EditCourse/PricingAndPublish";
+
 
 const MainRouter = () => {
   return (
@@ -81,7 +86,12 @@ const MainRouter = () => {
           path="ReviewsAndRatings"
           element={<InstructorReviewsAndRatings />}
         />
-        <Route path="Course/:CourseId/Edit" element={<EditCourse />} />
+      </Route>
+      <Route path="/Course/:CourseId/Edit" element={<><InstructorNavbar /><EditCourse /></>} >
+        <Route path="Basics" element={<Basics/>} />
+        <Route path="GoalsAndDescription" element={<GoalsAndDescription/>} />
+        <Route path="Curriculum" element={<Curriculum/>} />
+        <Route path="PricingAndPublish" element={<PricingAndPublish/>} />
       </Route>
     </Routes>
   );
