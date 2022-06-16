@@ -35,6 +35,38 @@ exports.publishedCourses = catchAsync(async (req, res) => {
   });
 });
 
+exports.unpublishedSpecificCourse = catchAsync(async (req, res, next) => {
+  const course = await Course.find({
+    published: false,
+    _id: req.params.courseId,
+  })
+    .populate([
+      {
+        path: "instructor",
+        model: "Educator",
+      },
+      {
+        path: "sections",
+        model: "Section",
+        populate:{
+            path:"lessons",
+            model:"Lesson",
+        },
+      },
+      {
+        path: "reviews",
+        model: "ReviewRating",
+        select: "review rating",
+      },
+    ]);
+  res.status(201).json({
+    status: "success",
+    data: {
+      course: course,
+    },
+  });
+});
+
 exports.publicSpecificCourse = catchAsync(async (req, res, next) => {
   const course = await Course.find({
     published: true,
@@ -137,11 +169,11 @@ exports.courseByID = catchAsync(async (req, res, next) => {
 exports.editBasics = catchAsync(async (req, res, next) => {
   const course = req.Course;
   // console.log(course.lessons);
-  const { name, category, obective } = req.body;
+  const { name, category, objective,goals,requirements,description } = req.body;
   try {
     currcourse = await Course.findByIdAndUpdate(
       course._id,
-      { name: name, category: category, objective: objective },
+      { name: name, category: category, objective: objective,courseGoals:goals,requirements:requirements,description:description },
       { runValidators: true, returnDocument: "after" }
     );
     await currcourse.save();

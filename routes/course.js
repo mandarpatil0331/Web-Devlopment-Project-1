@@ -18,6 +18,7 @@ const {
   changePublishStatus,
   studentEnrollments,
   publicSpecificCourse,
+  unpublishedSpecificCourse
 } = require("../controllers/course");
 const {
   newLesson,
@@ -38,16 +39,23 @@ router
   .route("/courses/:educatorId/unpublished")
   .get(requiresSigninEducator, hasAuthorizationEducator, unpublishedCourses);
 
-//BasicEdit
+//UnpublishedCourseSpecific
 router
-  .route("/courses/:educatorId/unpublished/:courseId/basics")
+  .route("/courses/:educatorId/unpublished/:courseId")
+  .get(
+    requiresSigninEducator,
+    hasAuthorizationEducator,
+    courseByID,
+    isUnpublished,
+    unpublishedSpecificCourse
+  )
   .put(
     requiresSigninEducator,
     hasAuthorizationEducator,
     courseByID,
     isUnpublished,
     editBasics
-  );
+  )
 
 //PublishStatusUpdate
 router

@@ -1,9 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const {requiresSigninEducator, requiresSigninStudent} = require("../controllers/auth");
-const { courseByID,isInstructor,isUnpublished } = require("../controllers/course");
-const {newLesson,editBasicsLesson,removeLesson}=require("../controllers/lesson");
-
+const {
+  requiresSigninEducator,
+  requiresSigninStudent,
+} = require("../controllers/auth");
+const {
+  courseByID,
+  isInstructor,
+  isUnpublished,
+} = require("../controllers/course");
+const {
+  newLesson,
+  editLesson,
+  removeLesson,
+  newVideoUpload,
+} = require("../controllers/lesson");
+const multer  = require('multer')
+const upload = multer();
 
 router
   .route("/courses/:courseId/:SectionId/lessons")
@@ -15,7 +28,8 @@ router
     courseByID,
     isUnpublished,
     isInstructor,
-    editBasicsLesson
+    upload.single('lessonVideo'),
+    editLesson
   )
   .delete(
     requiresSigninEducator,
@@ -25,4 +39,14 @@ router
     removeLesson
   );
 
-  module.exports = router;
+router
+  .route("/courses/:courseId/:SectionId/:LessonId/video")
+  .post(
+    requiresSigninEducator,
+    courseByID,
+    isUnpublished,
+    isInstructor,
+    newVideoUpload
+  );
+
+module.exports = router;
