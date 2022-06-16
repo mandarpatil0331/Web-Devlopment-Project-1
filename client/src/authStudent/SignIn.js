@@ -1,4 +1,4 @@
-import React,{useState,useContext} from 'react'
+import React,{useState,useContext,useEffect} from 'react'
 import { Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Card, CardContent,Grid} from "@mui/material";
@@ -9,6 +9,8 @@ import  AuthContext  from '../context/AuthContext';
 export default function SignIn(props) {
   const contextval=useContext(AuthContext);
     const navigate=useNavigate();
+    const [formErrors,setFormErrors] = useState({});
+    const [isSubmit,setIsSubmit] = useState(false);
     const host = "http://localhost:8000";
     const [credentials, setCredentials] = useState({
         email: "",
@@ -21,6 +23,9 @@ export default function SignIn(props) {
       };
     
       const clickSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmit(true);
+        setFormErrors(validate(credentials));
         const userdata = {
           email: credentials.email ,
           password: credentials.password ,
@@ -40,6 +45,28 @@ export default function SignIn(props) {
           contextval.UserSignIn(svrres.data.user);
           navigate(-1);
       }
+      const validate =  (values) => {
+        const errors = {};
+        const regex_email = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        if(!values.email){
+          errors.email = "Email is required";
+        }
+        else if(!regex_email.test(values.email))
+        {
+          errors.email = "This is not a valid email";
+        }
+        if(!values.password){
+          errors.password = "Password is required";
+        }
+        return errors;
+      }
+    useEffect(()=> {
+      console.log(formErrors);
+      if(Object.keys(formErrors).length === 0 && isSubmit)
+      {
+          console.log(credentials);
+      }
+    })
   return (
     <>
     <Card style={{boxShadow: "none"}} sx={{mt:10}}>
@@ -69,6 +96,7 @@ export default function SignIn(props) {
                 style={{ width: 400 }}
               />
             </Grid>
+            <p style={{ color: 'red' }}>{formErrors.email}</p>
             <br/>
             <Grid item>
               <TextField
@@ -82,6 +110,7 @@ export default function SignIn(props) {
                 style={{ width: 400 }}
               />
             </Grid>
+            <p style={{ color: 'red' }}>{formErrors.password}</p>
             </Grid>
         </CardContent>
         <div className={classes["submit-btn-contianer"]}>

@@ -4,7 +4,7 @@ const AppError = require("../utils/appError");
 
 exports.readStudent = catchAsync(async (req,res,next)=>
 {
-  const student = await Student.findById(req.params.studentId);
+  const student = await Student.findById(req.params.studentId).select("-enrollments -messages -completedEnrollments");cd
   res.status(200).json({
     status: "success",
     data: { student },
@@ -15,7 +15,7 @@ exports.updateStudent = catchAsync(async (req, res, next) => {
   try {
     let student = req.Student;
     // console.log(req.body);
-    const { name, email, password, address,description} = req.body;
+    const { name, email, address,description} = req.body;
     // const NewUser = {};
     // if (name) {
     //   NewUser.name = name;
@@ -30,12 +30,12 @@ exports.updateStudent = catchAsync(async (req, res, next) => {
     currStudent.overwrite({
       name: name,
       email: email,
-      password: password,
+      // password: password,
       address: address,
       description:description
     });
     await currStudent.save();
-    currStudent.password=undefined;
+    // currStudent.password=undefined;
     req.Student=currStudent;
     // console.log(curruser);
     res.status(200).json({

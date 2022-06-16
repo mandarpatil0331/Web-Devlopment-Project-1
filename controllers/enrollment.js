@@ -70,11 +70,44 @@ exports.enrollmentById = catchAsync(async (req, res, next) => {
   req.Enrollment = enrollment;
   next();
 });
+exports.lessonById = catchAsync(async(req, res,next)=>{
+  const lesson  = await Lesson.findById(req.params.enrollmentId).populate('lesson');
+  if (!lesson) {
+    return next(new AppError("Enrollment is Not Found", 401));
+  }
+  req.Lesson = lesson;
+  next();
+});
+exports.specificStudentEnrollments = catchAsync(async (req, res, next) => {
+  page = req.query.page || 1;
+  let Sort_select = req.query.sort_select;
+  LIMIT = req.query.LIMIT || 4;
+  const student = req.Student;
+  const enrollment = await Enrollment.find({ student: student._id })
+    .sort(`${Sort_select}`)
+    .skip((page - 1) * LIMIT)
+    .limit(LIMIT)
+    .populate([
+      {
+        path: "course",
+        model: "Course",
+        populate: { path: "instructor", model: "Educator", select: "name " },
+        select: "-enrollments -reviews",
+      },
+    ]);
+  res.status(201).json({
+    status: "success",
+    data: {
+      enrollments: enrollment,
+    },
+  });
+});
 exports.isEnrolled = catchAsync(async (req, res, next) => {
   const student = req.Student;
   const enrolled = student.enrollments.find((ele) => {
-    // console.log(JSON.stringify(ele._id));
-    return JSON.stringify(ele._id) == JSON.stringify(req.params.enrollmentId);
+    console.log(JSON.stringify(ele._id));
+    console.log(JSON.stringify(req.params.enrollmentId));
+    return JSON.stringify(ele._id) === JSON.stringify(req.params.enrollmentId);
   });
   // console.log(enrolled);
   if (!enrolled) {
@@ -118,75 +151,85 @@ exports.updateLessonStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.createNote = catchAsync(async (req, res, next) => {
-  const { data } = req.body;
-  const section = req.Enrollment.course.sections.find((section) => {
-    return section._id === req.params.sectionId;
-  });
-  const lesson = section.find((lesson) => {
-    return lesson._id === req.params.LessonId;
-  });
-  const note = { data: data, lesson: lesson };
-  const enrollment = await Enrollment.findByIdAndUpdate(
-    req.Enrollment._id,
-    { $push: { notes: note } },
-    { new: true }
-  );
-  res.status(201).json({
-    status: "success",
-    // jwt: token,
-    data: {
-      enrollment: enrollment,
-    },
-  });
-});
+    const {name,description}=req.body;
+    const lesson  = req.Enrollment.course.lessons.find((lesson)=>{
+       return  lesson._id === req.params._id
+    })
+    const note = {name:name,description:description,lesson:lesson};
+    const student = await Student.findByIdAndUpdate(
+        req.Student._id,
+        { $push: { notes: note } },
+        { new: true }
+      );
+    await student.save();
+})
 
+exports.editNote = catchAsync(async (req, res, next) => {
+  const {name,description}=req.body;
+  const lesson  = req.Enrollment.course.lessons.find((lesson)=>{
+    return  lesson._id === req.params._id
+ })
+    const note = {name:name,description:description,lesson:lesson};
+    lesson.overwrite(note);
+    await lesson.save();
+})
 exports.isComplete = catchAsync(async (req, res, next) => {
-  const complete = req.Enrollment.complete;
-  if (!complete) {
-    return next(new AppError("Course is Not completed", 401));
-  }
-  next();
-});
-
+    const complete = req.Enrollment.complete;
+    if(!complete)
+    {
+        return next(new AppError("Course is Not completed", 401));
+    }
+    next();
+})
+exports.deleteNote = catchAsync(async (req, res, next) => {
+  const lesson  = req.Enrollment.course.lessons.find((lesson)=>{
+    return  lesson._id === req.params._id
+ })
+ const deletedNote  = await le 
+})
 exports.createReview = catchAsync(async (req, res, next) => {
-  const { rating, review } = req.body;
-  const newReview = {
-    enrollment: req.Enrollment._id,
-    review: review,
-    rating: rating,
-  };
-  newCreatedReview = await ReviewRating.create(newReview);
-  await newCreatedReview.save();
-  const currEnrollment = await Enrollment.findById(req.params.EnrollemntId);
-  currEnrollment.reviewRating.push(newCreatedReview);
-  await currEnrollment.save();
-  currcourse = await Course.findById(req.Enrollment.course._id);
-  currcourse.reviews.push(newCreatedReview);
-  await currcourse.save();
-  res.send(currEnrollment);
+    const {rating,review} = req.body;
+    const enrollment = await Enrollment.findById(req.params.enrollmentId);
+    enrollment.review=review
+    enrollment.rating = rating
+    await enrollment.save();
+    res.send(enrollment);
+}
+)
+exports.deleteReview = catchAsync(async (req, res, next) => {
+  try {
+    const enrollment = await Enrollment.findById(req.params.enrollmentId);
+    const deletedMessage = await enrollment.deleteOne({ _id: notes._id });
+    res.status(200).json({
+     status: "success",
+     data: {
+       deletedMessage,
+     },
+   });
+    }
+    catch (err) {
+      return next(new AppError("Something went wrong while Updating", 401));
+      }})
+exports.createMessage = catchAsync( async(req,res,next) => {
+ const {messages} = req.body;
+ const enrollment = await Enrollment.findById(req.params.enrollmentId);
+ enrollment.messages = messages
+ await enrollment.save();
+ res.send(enrollment);
+}
+)
+exports.deleteMessage = catchAsync( async(req,res,next) => {
+  try {
+ const enrollment = await Enrollment.findById(req.params.enrollmentId);
+ const deletedMessage = await enrollment.deleteOne({ _id: notes._id });
+ res.status(200).json({
+  status: "success",
+  data: {
+    deletedMessage,
+  },
 });
+ }
+catch (err) {
+return next(new AppError("Something went wrong while Updating", 401));
+}})
 
-exports.specificStudentEnrollments = catchAsync(async (req, res, next) => {
-  page = req.query.page || 1;
-  let Sort_select = req.query.sort_select;
-  LIMIT = req.query.LIMIT || 4;
-  const student = req.Student;
-  const enrollment = await Enrollment.find({ student: student._id })
-    .sort(`${Sort_select}`)
-    .skip((page - 1) * LIMIT)
-    .limit(LIMIT)
-    .populate([
-      {
-        path: "course",
-        model: "Course",
-        populate: { path: "instructor", model: "Educator", select: "name " },
-        select: "-enrollments -reviews",
-      },
-    ]);
-  res.status(201).json({
-    status: "success",
-    data: {
-      enrollments: enrollment,
-    },
-  });
-});
